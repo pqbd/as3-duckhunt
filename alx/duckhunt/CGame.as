@@ -60,8 +60,9 @@ package alx.duckhunt
 
         this.m_weapon.addToDisplay( display.parent);
         Mouse.hide();
-        display.stage.addEventListener( MouseEvent.MOUSE_MOVE, mouseMoveHandler);
+        display.stage.addEventListener( MouseEvent.MOUSE_MOVE, onMouseMoveHandler);
         display.stage.addEventListener( MouseEvent.MOUSE_UP, onMouseClickHandler);
+        display.stage.addEventListener( KeyboardEvent.KEY_DOWN, onKeyDownEventHandler);
         this.m_display.addDisplayListener( this);
         this.m_display.addDisplayListener( this.m_weapon);
 
@@ -127,6 +128,10 @@ package alx.duckhunt
                 if ( target.checkHit( bullet.getX(), bullet.getY()))
                 {
                   target.hit();
+
+                  target = this.m_targetEmitter.EmitRandomOne( this.m_targetFactory, this.m_display.getSize(), null);
+                  this.m_arTarget.push( target);
+                  target.addToDisplay( this.m_display);
                 }
                 else
                 {
@@ -231,7 +236,7 @@ package alx.duckhunt
     }
     */
 
-    protected function mouseMoveHandler( event:MouseEvent):void
+    protected function onMouseMoveHandler( event:MouseEvent):void
     {
       if ( this.m_weapon)
         this.m_weapon.updatePosition( new CVector2f( event.stageX, event.stageY));
@@ -248,6 +253,18 @@ package alx.duckhunt
         if ( nY > this.m_display.getHeight())
           nY = this.m_display.getHeight();
         target.setPosition( new CVector2f( nX, nY));
+      }
+    }
+    protected function onKeyDownEventHandler( event:KeyboardEvent):void
+    {
+      if ( event.keyCode == Keyboard.SPACE)
+      {
+      }
+      else
+      if ( event.keyCode == Keyboard.R)
+      {
+        if ( this.m_weapon)
+          this.m_weapon.reload();
       }
     }
   }
