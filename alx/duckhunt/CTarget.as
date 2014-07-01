@@ -11,9 +11,9 @@ package alx.duckhunt
     private var m_nState:uint;
 
     public static const STATE_OK:uint = 1;
-    public static const STATE_HIT:uint = 1;
-    public static const STATE_MISSED:uint = 1;
-    public static const STATE_DISPOSED:uint = 1;
+    public static const STATE_HIT:uint = 2;
+    public static const STATE_MISSED:uint = 3;
+    public static const STATE_DISPOSED:uint = 4;
 
     public function CTarget( positionVector:CVector2f
                             , forceVector:CVector2f

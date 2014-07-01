@@ -9,7 +9,7 @@ package alx.duckhunt
 
     public function CTargetEmitter():void
     {
-      this.setMinForce( new  CVector2f( 1, 5)).setMaxForce( new CVector2f( 10, 55));
+      this.setMinForce( new  CVector2f( 1, 5)).setMaxForce( new CVector2f( 2, 55));
     }
 
     protected function checkForce( force:CVector2f):CVector2f

@@ -106,5 +106,10 @@ package alx.duckhunt
     {
       return Math.sqrt( this.norm2());
     }
+
+    public function toString():String
+    {
+      return '['+this.getX()+';'+this.getY()+']';
+    }
   }
 }

@@ -1,6 +1,8 @@
 package alx.duckhunt
 {
   import flash.display.MovieClip;
+  import flash.utils.Timer;
+  import flash.events.TimerEvent;
 
   public class CDuckTarget extends CTarget
   {
@@ -23,6 +25,13 @@ package alx.duckhunt
     {
       this.m_animation.scaleX *= -1;
       return super.turnX();
+    }
+    public override function turnY():CTarget
+    {
+      if ( this.isState( CTarget.STATE_OK))
+        return super.turnY();
+      else
+        return this;
     }
 
     public override function checkHit( nX:int, nY:int):Boolean
@@ -47,6 +56,36 @@ package alx.duckhunt
       return bHit;
     }
 
+    public override function hit():CTarget
+    {
+      this.m_animation.gotoAndPlay( 17);
+      this.setState( CTarget.STATE_HIT);
+      this.getSpeed().setX( 0).setY( 0);
+      var timer:Timer = new Timer( 500, 1);
+      timer.addEventListener( TimerEvent.TIMER, hitTimerHandler);
+      timer.start();
+      return this;
+    }
+    protected function hitTimerHandler( event:TimerEvent):void
+    {
+      this.m_animation.gotoAndPlay( 23);
+      this.applyForce( new CVector2f( 0, 9.8));
+    }
+
+    public override function dispose():CTarget
+    {
+      this.m_animation.gotoAndPlay( 45);
+      this.setState( CTarget.STATE_DISPOSED);
+      var timer:Timer = new Timer( 100, 1);
+      timer.addEventListener( TimerEvent.TIMER, hitTimerHandler);
+      timer.start();     
+      return this;
+    }
+    protected function disposeTimerHandler( event:TimerEvent):void
+    {
+       this.m_animation.parent.removeChild( this.m_animation);
+    }
+
     /*
     public override function miss():CTarget
     {
@@ -59,23 +98,6 @@ package alx.duckhunt
                   }
                 , 1000
                 );
-    }
-    public override function hit( nX:int, nY:int):Boolean
-    {
-      return false;
-    }
-    public override function destroy():void
-    {
-    }
-
-
-    public override function miss():void
-    {
-      throw Error( 'miss must be implemented');
-    }
-    public override function destroy():void
-    {
-      this.m_animation.gotoAndStop( 'destroy');
     }
     */
   }

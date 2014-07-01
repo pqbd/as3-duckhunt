@@ -101,11 +101,43 @@ package alx.duckhunt
     {
     }
 
+    //protected function onMouseClickHandler( event:MouseEvent):void
+    //{
+    //  var target:CTarget = this.m_targetEmitter.EmitRandomOne( this.m_targetFactory, this.m_display.getSize(), null);
+    //  this.m_arTarget.push( target);
+    //  target.addToDisplay( this.m_display);
+    //}
+
     protected function onMouseClickHandler( event:MouseEvent):void
     {
-      var target:CTarget = this.m_targetEmitter.EmitRandomOne( this.m_targetFactory, this.m_display.getSize(), null);
-      this.m_arTarget.push( target);
-      target.addToDisplay( this.m_display);
+      if ( this.m_weapon != null)
+      {
+        var arBullet:Array = this.m_weapon.fire( new CVector2f( event.stageX, event.stageY));
+        var nBulletCount:int = arBullet.length;
+        if ( nBulletCount > 0)
+        {          
+          for ( var i:int; i < this.m_arTarget.length; i++)
+          {
+            var target:CTarget = this.m_arTarget[ i];
+            //if ( target.is())
+            {
+              for ( var j:int = 0; j < nBulletCount; j++)
+              {
+                var bullet:CVector2f = arBullet[ j];
+                if ( target.checkHit( bullet.getX(), bullet.getY()))
+                {
+                  target.hit();
+                }
+                else
+                {
+                  
+                }
+              }
+            }
+          }
+          //this.m_weapon.reload();
+        }
+      }
     }
 
     /*
