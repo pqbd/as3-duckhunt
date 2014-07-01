@@ -73,7 +73,7 @@ package alx.duckhunt
     public function addToDisplay( display:CDisplay):CTarget
     {
       this.update();
-      display.add( this.m_displayObject);
+      display.add( this.getDisplayObject());
       return this;
     }
     public function getDisplayObject():DisplayObject

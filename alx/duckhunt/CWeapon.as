@@ -2,9 +2,11 @@ package alx.duckhunt
 {
   import flash.display.DisplayObjectContainer;
   import flash.utils.Timer;
+  import flash.events.Event;
   import flash.events.TimerEvent;
 
   public class CWeapon
+  implements IDisplayListener
   {
     private var m_bReady:Boolean;
     private var m_nNumberOfMagazines:int;
@@ -16,7 +18,7 @@ package alx.duckhunt
       this.setNumberOfMagazines( nNumberOfMagazines);
       this.m_magazine = this.createMagazine();
     }
-    
+
     public function createMagazine():CWeaponMagazine
     {
       throw Error( 'createMagazine must be implemented');
@@ -25,13 +27,11 @@ package alx.duckhunt
     {
       return 1000;
     }
-    public function addToDisplay( display:DisplayObjectContainer):CWeapon
+    public function addToDisplay( display:DisplayObjectContainer):void
     {
-      return this;
     }
-    public function updatePosition( position:CVector2f):CWeapon
+    public function updatePosition( position:CVector2f):void
     {
-      return this;
     }
 
     protected function setReady( bFlag:Boolean):CWeapon
@@ -74,7 +74,7 @@ package alx.duckhunt
         var timer:Timer = new Timer( this.timeBetweenShots(), 1);
         timer.addEventListener( TimerEvent.TIMER, releaseHandler);
         timer.start();
-        return this.m_magazine.fire( target);        
+        return this.m_magazine.fire( target);
       }
       else
       {
@@ -104,6 +104,10 @@ package alx.duckhunt
       else
         this.onReloadFail();
       return this;
+    }
+
+    public function onDisplayResize( display:CDisplay, event:Event):void
+    {
     }
   }
 }

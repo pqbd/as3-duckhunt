@@ -2,8 +2,10 @@ package alx.duckhunt
 {
   import flash.display.DisplayObjectContainer;
   import flash.display.MovieClip;
+  import flash.events.Event;
 
-  public class CSniperRifle extends CWeapon
+  public class CSniperRifle
+  extends CWeapon
   {
     private var m_aimAnimation:MovieClip;
     private var m_magazineAnimation:MovieClip;
@@ -26,17 +28,20 @@ package alx.duckhunt
     {
       return 3000;
     }
-    public override function addToDisplay( display:DisplayObjectContainer):CWeapon
+    public override function addToDisplay( display:DisplayObjectContainer):void
     {
       display.addChild( this.m_aimAnimation);
       display.addChild( this.m_magazineAnimation);
-      return this;
     }
-    public override function updatePosition( position:CVector2f):CWeapon
+    public override function onDisplayResize( display:CDisplay, event:Event):void
+    {
+      this.m_magazineAnimation.x = display.getWidth() - 20;
+      this.m_magazineAnimation.y = display.getHeight() - 5;
+    }
+    public override function updatePosition( position:CVector2f):void
     {
       this.m_aimAnimation.x = position.getX();
       this.m_aimAnimation.y = position.getY();
-      return this;
     }
     public override function isReady():Boolean
     {

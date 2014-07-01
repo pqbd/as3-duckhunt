@@ -14,6 +14,7 @@ package alx.duckhunt
   import alx.common.util.CRandom;
 
   public class CGame
+  implements IDisplayListener
   {
     private var m_display:CDisplay;
     private var m_targetFactory:CTargetFactory;
@@ -40,16 +41,11 @@ package alx.duckhunt
         bOk = true;
       return bOk;
     }
-
     public function setWeapon( weapon:CWeapon):CGame
     {
       this.m_weapon = weapon;
       return this;
-    }
-    protected function mouseMoveHandler( event:MouseEvent):void
-    {
-      this.m_weapon.updatePosition( new CVector2f( event.stageX, event.stageY));
-    }
+    }    
 
 
     public function start( display:DisplayObjectContainer, random:CRandom = null):void
@@ -57,27 +53,25 @@ package alx.duckhunt
       if ( this.isReady())
       {
         this.m_display = new CDisplay( display);
-        display.stage.align = StageAlign.TOP_LEFT;
-        display.stage.scaleMode = StageScaleMode.NO_SCALE;
 
         var timer:Timer = new Timer( 10);
         timer.addEventListener( TimerEvent.TIMER, timerHandler);
         timer.start();
-                
+
         this.m_weapon.addToDisplay( display.parent);
         Mouse.hide();
-        display.parent.addEventListener( MouseEvent.MOUSE_MOVE, mouseMoveHandler);
-
-        display.parent.stage.addEventListener( Event.RESIZE, ResizeListener);
+        display.stage.addEventListener( MouseEvent.MOUSE_MOVE, mouseMoveHandler);
+        display.stage.addEventListener( MouseEvent.MOUSE_UP, onMouseClickHandler);
+        this.m_display.addDisplayListener( this);
+        this.m_display.addDisplayListener( this.m_weapon);
 
         this.m_targetEmitter = new CTargetEmitter();
         this.m_arTarget = new Array();
-        for ( var i:int = 0; i < 4; i++)
+        for ( var i:int = 0; i < 1; i++)
         {
           var target:CTarget = this.m_targetEmitter.EmitRandomOne( this.m_targetFactory, this.m_display.getSize(), random);
           this.m_arTarget.push( target);
-          target.getDisplayObject().cacheAsBitmap = true;
-          display.addChild( target.getDisplayObject());
+          target.addToDisplay( this.m_display);
         }
       }
       else
@@ -88,7 +82,7 @@ package alx.duckhunt
     {
       for ( var i:int; i < this.m_arTarget.length; i++)
       {
-        var target:CTarget = this.m_arTarget[ i];        
+        var target:CTarget = this.m_arTarget[ i];
         if (( target.getPosition().getX() < 0) || ( target.getPosition().getX() > this.m_display.getWidth()))
           target.turnX();
         if (( target.getPosition().getY() < 0) || ( target.getPosition().getY() > this.m_display.getHeight()))
@@ -106,20 +100,26 @@ package alx.duckhunt
     protected function onTargetDispose():void
     {
     }
-    
-    /*
-    protected function MouseMoveHandler( event:MouseEvent):void
+
+    protected function onMouseClickHandler( event:MouseEvent):void
     {
-      this.m_cursor.x = event.stageX;
-      this.m_cursor.y = event.stageY;
+      var target:CTarget = this.m_targetEmitter.EmitRandomOne( this.m_targetFactory, this.m_display.getSize(), null);
+      this.m_arTarget.push( target);
+      target.addToDisplay( this.m_display);
     }
+
+    /*
     protected function MouseClickHandler( event:MouseEvent):void
     {
-
+      // scores
       if ( target.checkHit( event.stageX, event.stageY))
       {
         // scores
         target.hit();
+      }
+      else
+      {
+        //miss
       }
 
 
@@ -199,7 +199,12 @@ package alx.duckhunt
     }
     */
 
-    protected function ResizeListener( event:Event):void
+    protected function mouseMoveHandler( event:MouseEvent):void
+    {
+      if ( this.m_weapon)
+        this.m_weapon.updatePosition( new CVector2f( event.stageX, event.stageY));
+    }
+    public function onDisplayResize( display:CDisplay, event:Event):void
     {
       for ( var i:int; i < this.m_arTarget.length; i++)
       {

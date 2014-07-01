@@ -1,3 +1,4 @@
+import flash.display.DisplayObjectContainer;
 import alx.duckhunt.CRandomTargetFactory
 import alx.duckhunt.CDuckTargetFactory
 import alx.duckhunt.CSniperRifle
@@ -6,20 +7,22 @@ import alx.duckhunt.CGame
 //import flash.media.Sound;
 //import flash.media.SoundChannel;
 
-var game = new CGame();
+var game:CGame = new CGame();
 
 game.setTargetFactory( new CRandomTargetFactory( null
-                                              , new CDuckTargetFactory( _MCDrake, _MCDuck)
-                                              , new CDuckTargetFactory( _MCDuckDuck)
+                                              , new CDuckTargetFactory( _MCDuck)
+                                              //, new CDuckTargetFactory( _MCDrake, _MCDuck)
+                                              //, new CDuckTargetFactory( _MCDuckDuck)
                                               )
                      )
     .setWeapon( new CSniperRifle( new _MCSniperRiffle(), new _MCSniperRiffleRound(), -1))
     ;
 
-if ( this.parent)
-  game.start( this.parent);
-else
-  game.start( root);
+var display:DisplayObjectContainer = this.parent;
+display.stage.align = StageAlign.TOP_LEFT;
+display.stage.scaleMode = StageScaleMode.NO_SCALE;
+
+game.start( display);
 
 /*
 game.SetDuck1( _MCDuck1)
