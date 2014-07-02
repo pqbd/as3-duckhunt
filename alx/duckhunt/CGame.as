@@ -90,32 +90,38 @@ package alx.duckhunt
       while ( iterator.hasNext())
       {
         var target:CTarget = iterator.next() as CTarget;
-        if (( target.getPosition().getX() < 0) || ( target.getPosition().getX() > this.m_display.getWidth()))
-          target.turnX();
-        if (( target.getPosition().getY() < 0) || ( target.getPosition().getY() > this.m_display.getHeight()))
+        if ( !target.isDisposed())
         {
-          if ( target.isHit())
+          if (( target.getPosition().getX() < 0) || ( target.getPosition().getX() > this.m_display.getWidth()))
           {
-            if ( target.getPosition().getY() > this.m_display.getHeight())
+            target.turnX();
+          }
+          if (( target.getPosition().getY() < 0) || ( target.getPosition().getY() > this.m_display.getHeight()))
+          {
+            if ( target.isHit())
             {
-              target.dispose();
-              bDisposed = true;
+              if ( target.getPosition().getY() > this.m_display.getHeight())
+              {
+                target.dispose();
+                bDisposed = true;
+              }
+            }
+            else
+            if ( target.isMissed())
+            {
+              if ( target.getPosition().getY() < 0)
+              {
+                target.dispose();
+                bDisposed = true;
+              }
+            }
+            else
+            {
+              target.turnY();
             }
           }
-          if ( target.isMissed())
-          {
-            if ( target.getPosition().getY() < 0)
-            {
-              target.dispose();
-              bDisposed = true;
-            }
-          }
-          else
-          {
-            target.turnY();
-          }
+          target.move();
         }
-        target.move();
       }
       if ( bDisposed)
         this.onTargetDispose();
@@ -134,12 +140,6 @@ package alx.duckhunt
     {
     }
 
-    //protected function onMouseClickHandler( event:MouseEvent):void
-    //{
-    //  var target:CTarget = this.m_targetEmitter.EmitRandomOne( this.m_targetFactory, this.m_display.getSize(), null);
-    //  this.m_arTarget.push( target);
-    //  target.addToDisplay( this.m_display);
-    //}
     protected function onMouseClickHandler( event:MouseEvent):void
     {
       if ( this.m_weapon != null)
@@ -162,12 +162,15 @@ package alx.duckhunt
                 {
                   target.hit();
                   bMiss = false;
-                  this.onTargetHit( target);                  
+                  this.onTargetHit( target);
                 }
                 else
                   target.miss();
               }
             }
+            else
+            if ( target.isDisposed())
+              this.m_targetList.remove( target);
           }
           if ( bMiss)
             this.onTargetMiss();
@@ -198,6 +201,9 @@ package alx.duckhunt
     {
       if ( event.keyCode == Keyboard.SPACE)
       {
+        var target:CTarget = this.m_targetEmitter.EmitRandomOne( this.m_targetFactory, this.m_display.getSize(), null);
+        this.m_targetList.add( target);
+        target.addToDisplay( this.m_display);
       }
       else
       if ( event.keyCode == Keyboard.R)

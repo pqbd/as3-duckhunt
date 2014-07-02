@@ -98,7 +98,9 @@ package alx.duckhunt
     }
     protected function disposeTimerHandler( event:TimerEvent):void
     {
-       this.m_animation.parent.removeChild( this.m_animation);
+      this.m_animation.parent.removeChild( this.m_animation);
+      this.m_animation.stop();
+      this.m_animation = null;
     }
 
     
@@ -117,7 +119,8 @@ package alx.duckhunt
     }
     protected function missTimerHandler( event:TimerEvent):void
     {
-      this.m_animation.gotoAndPlay( 66);
+      if ( this.m_animation != null)
+        this.m_animation.gotoAndPlay( 66);
       this.getSpeed().set( 0, -this.getSpeed().norm());
     }
   }
