@@ -61,6 +61,7 @@ package alx.duckhunt
     }
     protected override function onReloadSuccess():void
     {
+      this.m_aimAnimation.gotoAndPlay( 72);
       this.m_magazineAnimation.gotoAndStop( 1);
     }
     protected override function onReloadFail():void

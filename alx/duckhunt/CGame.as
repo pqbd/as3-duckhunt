@@ -12,6 +12,9 @@ package alx.duckhunt
   import flash.events.KeyboardEvent;
 
   import alx.common.util.CRandom;
+  import alx.common.util.IList;
+  import alx.common.util.IIterator;
+  import alx.common.util.CArrayList;
 
   public class CGame
   implements IDisplayListener
@@ -19,13 +22,14 @@ package alx.duckhunt
     private var m_display:CDisplay;
     private var m_targetFactory:CTargetFactory;
     private var m_targetEmitter:CTargetEmitter;
-    private var m_arTarget:Array;
+    private var m_targetList:IList;
 
     private var m_weapon:CWeapon;
 
     public function CGame():void
     {
       this.setTargetFactory( null);
+      this.m_targetList = new CArrayList();
     }
 
     public function setTargetFactory( targetFactory:CTargetFactory):CGame
@@ -67,11 +71,11 @@ package alx.duckhunt
         this.m_display.addDisplayListener( this.m_weapon);
 
         this.m_targetEmitter = new CTargetEmitter();
-        this.m_arTarget = new Array();
+        this.m_targetList.clear();
         for ( var i:int = 0; i < 1; i++)
         {
           var target:CTarget = this.m_targetEmitter.EmitRandomOne( this.m_targetFactory, this.m_display.getSize(), random);
-          this.m_arTarget.push( target);
+          this.m_targetList.add( target);
           target.addToDisplay( this.m_display);
         }
       }
@@ -81,9 +85,10 @@ package alx.duckhunt
 
     protected function timerHandler( event:TimerEvent):void
     {
-      for ( var i:int; i < this.m_arTarget.length; i++)
+      var iterator:IIterator = this.m_targetList.iterator();
+      while ( iterator.hasNext())
       {
-        var target:CTarget = this.m_arTarget[ i];
+        var target:CTarget = iterator.next() as CTarget;
         if (( target.getPosition().getX() < 0) || ( target.getPosition().getX() > this.m_display.getWidth()))
           target.turnX();
         if (( target.getPosition().getY() < 0) || ( target.getPosition().getY() > this.m_display.getHeight()))
@@ -116,21 +121,22 @@ package alx.duckhunt
         var arBullet:Array = this.m_weapon.fire( new CVector2f( event.stageX, event.stageY));
         var nBulletCount:int = arBullet.length;
         if ( nBulletCount > 0)
-        {          
-          for ( var i:int; i < this.m_arTarget.length; i++)
+        {
+          var iterator:IIterator = this.m_targetList.iterator();
+          while ( iterator.hasNext())
           {
-            var target:CTarget = this.m_arTarget[ i];
+            var target:CTarget = iterator.next() as CTarget;
             //if ( target.is())
             {
-              for ( var j:int = 0; j < nBulletCount; j++)
+              for ( var i:int = 0; i < nBulletCount; i++)
               {
-                var bullet:CVector2f = arBullet[ j];
+                var bullet:CVector2f = arBullet[ i];
                 if ( target.checkHit( bullet.getX(), bullet.getY()))
                 {
                   target.hit();
 
                   target = this.m_targetEmitter.EmitRandomOne( this.m_targetFactory, this.m_display.getSize(), null);
-                  this.m_arTarget.push( target);
+                  this.m_targetList.add( target);
                   target.addToDisplay( this.m_display);
                 }
                 else
@@ -243,9 +249,10 @@ package alx.duckhunt
     }
     public function onDisplayResize( display:CDisplay, event:Event):void
     {
-      for ( var i:int; i < this.m_arTarget.length; i++)
+      var iterator:IIterator = this.m_targetList.iterator();
+      while ( iterator.hasNext())
       {
-        var target:CTarget = this.m_arTarget[ i];
+        var target:CTarget = iterator.next() as CTarget;
         var nX:Number = target.getPosition().getX();
         var nY:Number = target.getPosition().getY();
         if ( nX > this.m_display.getWidth())

@@ -11,8 +11,9 @@ var game:CGame = new CGame();
 
 game.setTargetFactory( new CRandomTargetFactory( null
                                               , new CDuckTargetFactory( _MCDuck)
+                                              , new CDuckTargetFactory( _MCDrake)
+                                              , new CDuckTargetFactory( _MCDuckDuck)
                                               //, new CDuckTargetFactory( _MCDrake, _MCDuck)
-                                              //, new CDuckTargetFactory( _MCDuckDuck)
                                               )
                      )
     .setWeapon( new CSniperRifle( new _MCSniperRiffle(), new _MCSniperRiffleRound(), -1))
