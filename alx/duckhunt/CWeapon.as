@@ -93,7 +93,7 @@ package alx.duckhunt
       if ( !this.m_magazine.isEmpty())
         this.setReady( true);
     }    
-    protected function onReloadSuccess():void
+    protected function onReloadStart():void
     {
     }
     protected function onReloadComplete():void
@@ -108,7 +108,7 @@ package alx.duckhunt
       this.setReady( false);
       if (( this.getNumberOfMagazines() < 0) || ( this.getNumberOfMagazines() > 0))
       {
-        this.onReloadSuccess();
+        this.onReloadStart();
         if ( this.getNumberOfMagazines() > 0)
           this.incNumberOfMagazines( -1);        
         var timer:Timer = new Timer( this.timeForReload(), 1);
