@@ -85,6 +85,7 @@ package alx.duckhunt
 
     protected function timerHandler( event:TimerEvent):void
     {
+      var bDisposed:Boolean = false;
       var iterator:IIterator = this.m_targetList.iterator();
       while ( iterator.hasNext())
       {
@@ -92,16 +93,42 @@ package alx.duckhunt
         if (( target.getPosition().getX() < 0) || ( target.getPosition().getX() > this.m_display.getWidth()))
           target.turnX();
         if (( target.getPosition().getY() < 0) || ( target.getPosition().getY() > this.m_display.getHeight()))
-          target.turnY();
+        {
+          if ( target.isHit())
+          {
+            if ( target.getPosition().getY() > this.m_display.getHeight())
+            {
+              target.dispose();
+              bDisposed = true;
+            }
+          }
+          if ( target.isMissed())
+          {
+            if ( target.getPosition().getY() < 0)
+            {
+              target.dispose();
+              bDisposed = true;
+            }
+          }
+          else
+          {
+            target.turnY();
+          }
+        }
         target.move();
       }
+      if ( bDisposed)
+        this.onTargetDispose();
     }
 
     protected function onTargetMiss():void
     {
     }
-    protected function onTargetHit():void
+    protected function onTargetHit( target:CTarget):void
     {
+      target = this.m_targetEmitter.EmitRandomOne( this.m_targetFactory, this.m_display.getSize(), null);
+      this.m_targetList.add( target);
+      target.addToDisplay( this.m_display);
     }
     protected function onTargetDispose():void
     {
@@ -113,7 +140,6 @@ package alx.duckhunt
     //  this.m_arTarget.push( target);
     //  target.addToDisplay( this.m_display);
     //}
-
     protected function onMouseClickHandler( event:MouseEvent):void
     {
       if ( this.m_weapon != null)
@@ -122,11 +148,12 @@ package alx.duckhunt
         var nBulletCount:int = arBullet.length;
         if ( nBulletCount > 0)
         {
+          var bMiss:Boolean = true;
           var iterator:IIterator = this.m_targetList.iterator();
           while ( iterator.hasNext())
           {
             var target:CTarget = iterator.next() as CTarget;
-            //if ( target.is())
+            if ( target.isHittable())
             {
               for ( var i:int = 0; i < nBulletCount; i++)
               {
@@ -134,114 +161,17 @@ package alx.duckhunt
                 if ( target.checkHit( bullet.getX(), bullet.getY()))
                 {
                   target.hit();
-
-                  target = this.m_targetEmitter.EmitRandomOne( this.m_targetFactory, this.m_display.getSize(), null);
-                  this.m_targetList.add( target);
-                  target.addToDisplay( this.m_display);
-                }
-                else
-                {
-                  
+                  bMiss = false;
+                  this.onTargetHit( target);                  
                 }
               }
             }
           }
-          //this.m_weapon.reload();
+          if ( bMiss)
+            this.onTargetMiss();
         }
       }
     }
-
-    /*
-    protected function MouseClickHandler( event:MouseEvent):void
-    {
-      // scores
-      if ( target.checkHit( event.stageX, event.stageY))
-      {
-        // scores
-        target.hit();
-      }
-      else
-      {
-        //miss
-      }
-
-
-      this.m_bFire = true;
-      if ( !this.m_bReload)
-      {
-        if ( this.m_bLevelSet)
-        {
-          this.m_myPatron.gotoAndStop( 2);
-          this.m_bReload = true;
-
-          this.m_arScore[ this.m_nLevel].IncShots();
-          this.m_cursor.gotoAndPlay( 2);
-          var bHit:Boolean = false;
-          var nCount:int = 0;
-          for ( var i:int = 0; i < this.m_arDuck.length; i++)
-          {
-            var item:MovieClip = this.m_arDuck[ i];
-            if ( item)
-            {
-              if ( CheckHit( event.stageX, event.stageY, item))
-              {
-                this.m_arDuck[ i] = null;
-                this.DuckDie( item);
-                bHit = true;
-
-                var headshot:MovieClip = new this.m_headshot();
-                headshot.c_nick1.text = this.GetPlayerName();
-                if ( item is this.m_duck1)
-                  headshot.c_nick2.text = 'Drake['+i+']';
-                else
-                  headshot.c_nick2.text = 'Duck['+i+']';
-                this.m_arHeadshot.push( headshot);
-
-                trace( this.m_arScore[ this.m_nLevel]);
-              }
-              else
-              {
-                if ( item[ 'strState'] == 'play')
-                  nCount++;
-              }
-            }
-          }
-          if ( !bHit)
-          {
-            this.m_myDog.gotoAndPlay( 1);
-            this.EmitRandomDuck();
-            if ( nCount >= this.MaxDucks())
-              this.MissOneDuck();
-            nCount++;
-          }
-          else
-          {
-            this.ShowHeadshot();
-          }
-
-          if ( nCount == 0)
-          {
-            this.ShowScores();
-            this.m_nLevel++;
-            this.m_bLevelSet = false;
-            if ( this.m_nLevel <= 15)
-            {
-              this.m_arScore[ this.m_nLevel] = new CScore();
-              this.DefragmentDucks();
-            }
-            else
-              this.m_nLevel = -1;
-          }
-
-          var timer:Timer = new Timer( 3000, 1);
-          timer.addEventListener( TimerEvent.TIMER, FireOverTimerHandler);
-          timer.start();
-        }
-      }
-      this.m_bFire = false;
-    }
-    */
-
     protected function onMouseMoveHandler( event:MouseEvent):void
     {
       if ( this.m_weapon)

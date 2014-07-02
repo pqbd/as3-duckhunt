@@ -77,7 +77,7 @@ package alx.duckhunt
       this.m_animation.gotoAndPlay( 45);
       this.setState( CTarget.STATE_DISPOSED);
       var timer:Timer = new Timer( 100, 1);
-      timer.addEventListener( TimerEvent.TIMER, hitTimerHandler);
+      timer.addEventListener( TimerEvent.TIMER, disposeTimerHandler);
       timer.start();     
       return this;
     }

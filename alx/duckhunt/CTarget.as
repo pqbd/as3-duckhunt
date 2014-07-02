@@ -10,10 +10,10 @@ package alx.duckhunt
     private var m_displayObject:DisplayObject;
     private var m_nState:uint;
 
-    public static const STATE_OK:uint = 1;
-    public static const STATE_HIT:uint = 2;
-    public static const STATE_MISSED:uint = 3;
-    public static const STATE_DISPOSED:uint = 4;
+    public static const STATE_OK:uint = 2;
+    public static const STATE_HIT:uint = 4;
+    public static const STATE_MISSED:uint = 8;
+    public static const STATE_DISPOSED:uint = 16;
 
     public function CTarget( positionVector:CVector2f
                             , forceVector:CVector2f
@@ -48,7 +48,7 @@ package alx.duckhunt
     }
     public function isState( nState:uint):Boolean
     {
-      return ( this.getState() == nState);
+      return (( this.getState() & nState) > 0);
     }
     public function setPosition( vector:CVector2f):CTarget
     {
@@ -97,9 +97,21 @@ package alx.duckhunt
       return this;
     }
 
-    public function notDisposed():Boolean
+    public function isHittable():Boolean
     {
-      return !this.isState( CTarget.STATE_DISPOSED);
+      return this.isState(( CTarget.STATE_OK | CTarget.STATE_MISSED));
+    }
+    public function isDisposed():Boolean
+    {
+      return this.isState( CTarget.STATE_DISPOSED);
+    }
+    public function isHit():Boolean
+    {
+      return this.isState( CTarget.STATE_HIT);
+    }
+    public function isMissed():Boolean
+    {
+      return this.isState( CTarget.STATE_MISSED);
     }
     public function move():CTarget
     {
