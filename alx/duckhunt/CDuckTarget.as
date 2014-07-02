@@ -41,8 +41,22 @@ package alx.duckhunt
       if ( this.m_animation.scaleX < 0)
        nMult = -1;
 
-      var nDuckX:Number =  18 * nMult;
-      var nDuckY:Number = -8;
+      var nXCorrection:int = 18;
+      var nYCorrection:int = -8;
+      if ( this.m_animation.currentFrame > 65)
+      {
+        nXCorrection = 0;
+        nYCorrection = -20;
+      }
+      else
+      if ( this.m_animation.currentFrame > 49)
+      {
+        nXCorrection = 15;
+        nYCorrection = -18;
+      }
+
+      var nDuckX:Number = nXCorrection * nMult;
+      var nDuckY:Number = nYCorrection;
       var nRadiusX:int = 8;
       var nRadiusY:int = 8;
       var nHitX:Number = nX - this.getPosition().getX();
@@ -74,11 +88,12 @@ package alx.duckhunt
 
     public override function dispose():CTarget
     {
-      this.m_animation.gotoAndPlay( 45);
       this.setState( CTarget.STATE_DISPOSED);
+      if ( this.isHit())
+        this.m_animation.gotoAndPlay( 45);
       var timer:Timer = new Timer( 100, 1);
       timer.addEventListener( TimerEvent.TIMER, disposeTimerHandler);
-      timer.start();     
+      timer.start();
       return this;
     }
     protected function disposeTimerHandler( event:TimerEvent):void
@@ -86,19 +101,24 @@ package alx.duckhunt
        this.m_animation.parent.removeChild( this.m_animation);
     }
 
-    /*
+    
     public override function miss():CTarget
     {
-      double n = this.getSpeed().();
-      this.m_animation.gotoAndPlay( 'miss_1');
-      this.setSpeed( this.getSpeed());
-      setTimeout( function()
-                  {
-                    this.m_animation.gotoAndPlay( 'miss_2');
-                  }
-                , 1000
-                );
+      if ( !this.isMissed())
+      {
+        this.m_animation.gotoAndPlay( 50);
+        this.setState( CTarget.STATE_MISSED);
+        this.getSpeed().setY(( -Math.abs( this.getSpeed().getY()) * 1.5));
+        var timer:Timer = new Timer( 1500, 1);
+        timer.addEventListener( TimerEvent.TIMER, missTimerHandler);
+        timer.start();
+      }
+      return this;
     }
-    */
+    protected function missTimerHandler( event:TimerEvent):void
+    {
+      this.m_animation.gotoAndPlay( 66);
+      this.getSpeed().set( 0, -this.getSpeed().norm());
+    }
   }
 }

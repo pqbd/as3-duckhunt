@@ -27,6 +27,10 @@ package alx.duckhunt
     {
       return 1000;
     }
+    public function timeForReload():uint
+    {
+      return 1000;
+    }
     public function addToDisplay( display:DisplayObjectContainer):void
     {
     }
@@ -67,26 +71,32 @@ package alx.duckhunt
     }
     public function fire( target:CVector2f):Array
     {
+      var arBullet:Array = new Array();
       if ( this.isReady())
       {
         this.onFireSuccess();
         this.setReady( false);
-        var timer:Timer = new Timer( this.timeBetweenShots(), 1);
-        timer.addEventListener( TimerEvent.TIMER, releaseHandler);
-        timer.start();
-        return this.m_magazine.fire( target);
+        arBullet = this.m_magazine.fire( target);
+        if ( !this.m_magazine.isEmpty())
+        {
+          var timer:Timer = new Timer( this.timeBetweenShots(), 1);
+          timer.addEventListener( TimerEvent.TIMER, fireTimeHandler);
+          timer.start();
+        }
       }
       else
-      {
         this.onFireFail();
-        return new Array();
-      }
+      return arBullet;
     }
-    protected function releaseHandler( event:TimerEvent):void
+    protected function fireTimeHandler( event:TimerEvent):void
     {
-      this.setReady( true);
-    }
+      if ( !this.m_magazine.isEmpty())
+        this.setReady( true);
+    }    
     protected function onReloadSuccess():void
+    {
+    }
+    protected function onReloadComplete():void
     {
     }
     protected function onReloadFail():void
@@ -94,16 +104,26 @@ package alx.duckhunt
     }
     public function reload():CWeapon
     {
+      this.m_magazine.clear();
+      this.setReady( false);
       if (( this.getNumberOfMagazines() < 0) || ( this.getNumberOfMagazines() > 0))
       {
         this.onReloadSuccess();
         if ( this.getNumberOfMagazines() > 0)
-          this.incNumberOfMagazines( -1);
-        this.m_magazine.reset();
+          this.incNumberOfMagazines( -1);        
+        var timer:Timer = new Timer( this.timeForReload(), 1);
+        timer.addEventListener( TimerEvent.TIMER, reloadTimeHandler);
+        timer.start();
       }
       else
         this.onReloadFail();
       return this;
+    }
+    protected function reloadTimeHandler( event:TimerEvent):void
+    {
+      this.m_magazine.reset();
+      this.onReloadComplete();
+      this.setReady( true);
     }
 
     public function onDisplayResize( display:CDisplay, event:Event):void

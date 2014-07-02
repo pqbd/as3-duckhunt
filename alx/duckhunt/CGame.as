@@ -164,6 +164,8 @@ package alx.duckhunt
                   bMiss = false;
                   this.onTargetHit( target);                  
                 }
+                else
+                  target.miss();
               }
             }
           }

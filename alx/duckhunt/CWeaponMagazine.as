@@ -23,6 +23,11 @@ package alx.duckhunt
     {
       return ( this.getSize() == 0);
     }
+    public function clear():CWeaponMagazine
+    {
+      this.m_nSize = 0;
+      return this;
+    }
     public function reset():CWeaponMagazine
     {
       this.m_nSize = this.getMaxSize();
