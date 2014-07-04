@@ -135,5 +135,10 @@ package alx.duckhunt
     {
       throw Error( 'destroy must be implemented');
     }
+
+    public function toString():String
+    {
+      return 'target';
+    }
   }
 }

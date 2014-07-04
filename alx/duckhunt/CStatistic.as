@@ -14,13 +14,15 @@ package alx.duckhunt
 
     public function CStatistic():void
     {
-      this.reset();
       this.m_targetCount = new CHashMap();
       this.m_targetHitCount = new CHashMap();
+
+      this.reset();
     }
 
     public function reset():CStatistic
     {
+      this.m_nMiss = 0;
       this.m_nScores = 0;
       this.m_targetCount.clear();
       this.m_targetHitCount.clear();
@@ -39,7 +41,7 @@ package alx.duckhunt
       var nCount:uint = 0;
       var strKey:String = target.toString();
       if ( this.m_targetHitCount.containsKey( strKey))
-       nCount = this.m_targetHitCount.get();
+       nCount = this.m_targetHitCount.get( strKey) as uint;
       nCount++;
       this.m_targetHitCount.put( strKey, nCount);
       return this;
@@ -54,7 +56,7 @@ package alx.duckhunt
       var nCount:uint = 0;
       var strKey:String = target.toString();
       if ( this.m_targetCount.containsKey( strKey))
-       nCount = this.m_targetCount.get();
+       nCount = this.m_targetCount.get( strKey) as uint;
       nCount++;
       this.m_targetCount.put( strKey, nCount);
       return this;
@@ -79,14 +81,17 @@ package alx.duckhunt
     public function getTargetTotal():uint
     {
       var nResult:uint = 0;
-      var iterator:IITerator = this.m_targetCount.keySet().iterator();
+      var iterator:IIterator = this.m_targetCount.keySet().iterator();
       while ( iterator.hasNext())
         nResult += this.m_targetCount.get( iterator.next());
       return nResult;
     }
     public function getAccuracyPercent():Number
     {
-      return ( this.getHitTotal() / this.getShootsTotal() * 100);
+      if ( this.getShootsTotal() > 0)
+        return ( this.getHitTotal() / this.getShootsTotal() * 100);
+      else
+        return 0;
     }
     
     public function getTargetCount():IMap

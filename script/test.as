@@ -6,6 +6,7 @@ import test.alx.duckhunt.CRandomTargetFactoryTest;
 import test.alx.duckhunt.CTargetEmitterTest;
 import test.alx.duckhunt.CSniperRifleMagazineTest;
 import test.alx.duckhunt.CSniperRifleTest;
+import test.alx.duckhunt.CStatisticTest;
 
 // refactoring
 //CUnitTests.init( CTester, CUnitTests.SIMPLE_MODE, true);
@@ -21,5 +22,6 @@ CUnitTests.run( CVector2fTest
               , CTargetEmitterTest
               , CSniperRifleMagazineTest
               , CSniperRifleTest
+              , CStatisticTest
               );
 CUnitTests.printResult( root);

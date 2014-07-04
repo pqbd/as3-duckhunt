@@ -19,6 +19,7 @@ package test.alx.duckhunt
                       , this.testNorm
                       , this.testMult
                       , this.testDiv
+                      , this.testToString
                       );
     }
 
@@ -267,6 +268,31 @@ package test.alx.duckhunt
       this.getTester().isEqual( 'vectorC.getX()'
                               , vectorC.getX()
                               , 2
+                              );
+    }
+
+    public function testToString():void
+    {
+      var vectorA:CVector2f = new CVector2f( 5, -7);
+      var vectorB:CVector2f = new CVector2f( 5.5, -7);
+      var vectorC:CVector2f = new CVector2f( 10, 4);
+      var vectorD:CVector2f = new CVector2f();
+
+      this.getTester().isEqual( 'vectorA.toString()'
+                              , vectorA.toString()
+                              , '[5;-7]'
+                              );
+      this.getTester().isEqual( 'vectorB.toString()'
+                              , vectorB.toString()
+                              , '[5.5;-7]'
+                              );
+      this.getTester().isEqual( 'vectorC.toString()'
+                              , vectorC.toString()
+                              , '[10;4]'
+                              );
+      this.getTester().isEqual( 'vectorD.toString()'
+                              , vectorD.toString()
+                              , '[0;0]'
                               );
     }
   }
