@@ -1,7 +1,7 @@
 package alx.common.util
 {
   /**
-   * Collection interface {@see http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/6-b14/java/util/AbstractCollection.java#AbstractCollection}.
+   * Abstract Collection {@see http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/6-b14/java/util/AbstractCollection.java#AbstractCollection}.
    * @author Alexander Volkov
    * @version 1.0
    */
@@ -52,7 +52,6 @@ package alx.common.util
       {
         while ( iterator.hasNext() && bNext)
         {
-          //if ( CObjectUtils.equal( element, iterator.next()))
           if ( element.valueOf() == iterator.next().valueOf())
             bNext = false;
         }
@@ -96,7 +95,6 @@ package alx.common.util
       {
         while ( iterator.hasNext() && bNext)
         {
-          //if ( CObjectUtils.equal( element, iterator.next()))
           if ( element.valueOf() == iterator.next().valueOf())
           {
             iterator.remove();

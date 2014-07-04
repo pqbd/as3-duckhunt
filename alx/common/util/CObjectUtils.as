@@ -29,5 +29,16 @@ package alx.common.util
       }
       return bIs;
     }
-  }
+
+    public static function hashObject( object:Object):String
+    {
+      trace( object.hashCode());
+      for( var prop:Object in object)
+      {
+        trace('Key: ' +prop)
+        trace('Value: ' +object[ prop]);
+      }
+      return 'a';
+    }
+  }  
 }
