@@ -56,6 +56,7 @@ package alx.duckhunt
     public function addDisplayListener( listener:IDisplayListener):CDisplay
     {
       this.m_listDisplayListener.add( listener);
+      listener.onDisplayResize( this, null);
       return this;
     }
     public function removeDisplayListener( listener:IDisplayListener):CDisplay

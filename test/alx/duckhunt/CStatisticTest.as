@@ -1,9 +1,6 @@
 package test.alx.duckhunt
 {
-  import flash.display.Sprite;
   import alx.common.test.CUnitTest;
-  import alx.duckhunt.CTarget;
-  import alx.duckhunt.CVector2f;
   import alx.duckhunt.CStatistic;
 
   public class CStatisticTest extends CUnitTest
@@ -32,7 +29,7 @@ package test.alx.duckhunt
     {
       const statistic:CStatistic = new CStatistic();
     }
-        
+
     public function testIncMiss():void
     {
       const statistic:CStatistic = new CStatistic();
@@ -86,11 +83,10 @@ package test.alx.duckhunt
     public function testReset():void
     {
       const statistic:CStatistic = new CStatistic();
-      const target1:CTarget = new CTarget1( new CVector2f(), new CVector2f(), new Sprite());
       statistic.incScores( 100);
       statistic.incMiss();
-      statistic.incTarget( target1);
-      statistic.incHit( target1);
+      statistic.incTarget( 'target1');
+      statistic.incHit( 'target1');
 
       statistic.reset();
 
@@ -122,11 +118,9 @@ package test.alx.duckhunt
     public function testIncTarget():void
     {
       const statistic:CStatistic = new CStatistic();
-      const target1:CTarget = new CTarget1( new CVector2f(), new CVector2f(), new Sprite());
-      const target2:CTarget = new CTarget2( new CVector2f(), new CVector2f(), new Sprite());
-      statistic.incTarget( target1);
-      statistic.incTarget( target1);
-      statistic.incTarget( target2);
+      statistic.incTarget( 'target1');
+      statistic.incTarget( 'target1');
+      statistic.incTarget( 'target2');
 
       this.getTester().isEqual( 'statistic.getTargetCount().size()'
                               , statistic.getTargetCount().size()
@@ -140,11 +134,9 @@ package test.alx.duckhunt
     public function testIncHit():void
     {
       const statistic:CStatistic = new CStatistic();
-      const target1:CTarget = new CTarget1( new CVector2f(), new CVector2f(), new Sprite());
-      const target2:CTarget = new CTarget2( new CVector2f(), new CVector2f(), new Sprite());
-      statistic.incHit( target1);
-      statistic.incHit( target1);
-      statistic.incHit( target2);
+      statistic.incHit( 'target1');
+      statistic.incHit( 'target1');
+      statistic.incHit( 'target2');
 
       this.getTester().isEqual( 'statistic.getTargetHitCount().size()'
                               , statistic.getTargetHitCount().size()
@@ -158,13 +150,11 @@ package test.alx.duckhunt
     public function testGetShootsTotal():void
     {
       const statistic:CStatistic = new CStatistic();
-      const target1:CTarget = new CTarget1( new CVector2f(), new CVector2f(), new Sprite());
-      const target2:CTarget = new CTarget2( new CVector2f(), new CVector2f(), new Sprite());
-      statistic.incHit( target1);
+      statistic.incHit( 'target1');
       statistic.incMiss();
-      statistic.incHit( target1);
+      statistic.incHit( 'target1');
       statistic.incMiss();
-      statistic.incHit( target2);
+      statistic.incHit( 'target2');
       statistic.incMiss();
 
       this.getTester().isEqual( 'statistic.getShootsTotal()'
@@ -175,13 +165,11 @@ package test.alx.duckhunt
     public function testGetAccuracyPercent():void
     {
       const statistic:CStatistic = new CStatistic();
-      const target1:CTarget = new CTarget1( new CVector2f(), new CVector2f(), new Sprite());
-      const target2:CTarget = new CTarget2( new CVector2f(), new CVector2f(), new Sprite());
-      statistic.incHit( target1);
+      statistic.incHit( 'target1');
       statistic.incMiss();
-      statistic.incHit( target1);
+      statistic.incHit( 'target1');
       statistic.incMiss();
-      statistic.incHit( target2);
+      statistic.incHit( 'target2');
       statistic.incMiss();
 
       this.getTester().isEqual( 'statistic.getAccuracyPercent()'
@@ -189,41 +177,5 @@ package test.alx.duckhunt
                               , 50
                               );
     }
-  }
-}
-
-import flash.display.DisplayObject;
-import alx.duckhunt.CTarget;
-import alx.duckhunt.CVector2f;
-
-class CTarget1 extends CTarget
-{
-  public function CTarget1( positionVector:CVector2f
-                            , forceVector:CVector2f
-                            , displayObject:DisplayObject
-                            ):void
-  {
-    super( positionVector, forceVector, displayObject);
-  }
-
-  public override function toString():String
-  {
-    return 'target1';
-  }
-}
-
-class CTarget2 extends CTarget
-{
-  public function CTarget2( positionVector:CVector2f
-                            , forceVector:CVector2f
-                            , displayObject:DisplayObject
-                            ):void
-  {
-    super( positionVector, forceVector, displayObject);
-  }
-
-  public override function toString():String
-  {
-    return 'target2';
   }
 }

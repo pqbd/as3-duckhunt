@@ -20,28 +20,32 @@ package alx.duckhunt
   implements IDisplayListener
   {
     private var m_display:CDisplay;
-    private var m_targetFactory:CTargetFactory;
+    private var m_arRound:Array;
+    private var m_currentRound:CRound;
+    private var m_nCurrentRoundIndex:uint;
+    private var m_totalStatistic:CStatistic;
     private var m_targetEmitter:CTargetEmitter;
     private var m_targetList:IList;
 
     private var m_weapon:CWeapon;
 
-    public function CGame():void
+    public function CGame( ...arRound):void
     {
-      this.setTargetFactory( null);
-      this.m_targetList = new CArrayList();
+      this.Init( arRound);
     }
 
-    public function setTargetFactory( targetFactory:CTargetFactory):CGame
+    public function Init( ...arRound):void
     {
-      this.m_targetFactory = targetFactory;
-      return this;
+      this.m_arRound = arRound;
+      this.m_targetList = new CArrayList();
+      this.m_targetEmitter = new CTargetEmitter();
+      this.m_nCurrentRoundIndex = 0;
     }
 
     public function isReady():Boolean
     {
       var bOk = false;
-      if ( this.m_targetFactory != null)
+      if ( this.m_arRound.length > 0)
         bOk = true;
       return bOk;
     }
@@ -50,7 +54,6 @@ package alx.duckhunt
       this.m_weapon = weapon;
       return this;
     }
-
 
     public function start( display:DisplayObjectContainer, random:CRandom = null):void
     {
@@ -70,11 +73,21 @@ package alx.duckhunt
         this.m_display.addDisplayListener( this);
         this.m_display.addDisplayListener( this.m_weapon);
 
-        this.m_targetEmitter = new CTargetEmitter();
-        this.m_targetList.clear();
+        this.nextRound();
       }
       else
         throw Error( 'Game not set');
+    }
+
+    protected function nextRound():Boolean
+    {
+      this.m_targetList.clear();
+      var bOk:Boolean = true;
+      if ( this.m_nCurrentRoundIndex < this.m_arRound.length)
+        this.m_currentRound = this.m_arRound[ this.m_nCurrentRoundIndex++];
+      else
+        bOk = false;
+      return bOk;
     }
 
     protected function timerHandler( event:TimerEvent):void
@@ -155,8 +168,6 @@ package alx.duckhunt
                   bMiss = false;
                   this.onTargetHit( target);
                 }
-                //else
-                //  target.miss();
               }
             }
             else
@@ -192,7 +203,7 @@ package alx.duckhunt
     {
       if ( event.keyCode == Keyboard.SPACE)
       {
-        var target:CTarget = this.m_targetEmitter.EmitRandomOne( this.m_targetFactory, this.m_display.getSize(), null);
+        var target:CTarget = this.m_targetEmitter.EmitRandomOne( this.m_currentRound.getTargetFactory(), this.m_display.getSize(), null);
         this.m_targetList.add( target);
         target.addToDisplay( this.m_display);
       }

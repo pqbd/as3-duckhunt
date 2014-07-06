@@ -36,10 +36,9 @@ package alx.duckhunt
         this.m_nScores += nOffset;
       return this;
     }
-    public function incHit( target:CTarget):CStatistic
+    public function incHit( strKey:String):CStatistic
     {
       var nCount:uint = 0;
-      var strKey:String = target.toString();
       if ( this.m_targetHitCount.containsKey( strKey))
        nCount = this.m_targetHitCount.get( strKey) as uint;
       nCount++;
@@ -51,10 +50,9 @@ package alx.duckhunt
       this.m_nMiss++;
       return this;
     }
-    public function incTarget( target:CTarget):CStatistic
+    public function incTarget( strKey:String):CStatistic
     {
       var nCount:uint = 0;
-      var strKey:String = target.toString();
       if ( this.m_targetCount.containsKey( strKey))
        nCount = this.m_targetCount.get( strKey) as uint;
       nCount++;
@@ -93,7 +91,7 @@ package alx.duckhunt
       else
         return 0;
     }
-    
+
     public function getTargetCount():IMap
     {
       return this.m_targetCount;
