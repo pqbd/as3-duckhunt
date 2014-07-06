@@ -40,6 +40,7 @@ package alx.duckhunt
       this.m_targetList = new CArrayList();
       this.m_targetEmitter = new CTargetEmitter();
       this.m_nCurrentRoundIndex = 0;
+      this.m_totalStatistic = new CStatistic();
     }
 
     public function isReady():Boolean
@@ -84,7 +85,22 @@ package alx.duckhunt
       this.m_targetList.clear();
       var bOk:Boolean = true;
       if ( this.m_nCurrentRoundIndex < this.m_arRound.length)
+      {
+        if ( this.m_currentRound)
+        {
+          var nBonusScore:uint = 500;
+          if ( this.m_currentRound.getStatistic().getAccuracyPercent() > 80)
+            nBonusScore += 1000;
+          if ( this.m_currentRound.getStatistic().getTargetCount() == this.m_currentRound.getStatistic().getTargetHitCount())
+            nBonusScore += 1000;
+          this.m_currentRound.getStatistic().incScores( nBonusScore);
+          this.m_totalStatistic.incScores( nBonusScore);
+        }
         this.m_currentRound = this.m_arRound[ this.m_nCurrentRoundIndex++];
+        this.m_targetEmitter.setMinForce( this.m_currentRound.getTargetMinForce())
+                            .setMaxForce( this.m_currentRound.getTargetMaxForce())
+                            ;
+      }
       else
         bOk = false;
       return bOk;
@@ -136,9 +152,15 @@ package alx.duckhunt
 
     protected function onTargetMiss():void
     {
+      this.m_currentRound.getStatistic().incMiss();
+      this.m_totalStatistic.incMiss();
     }
     protected function onTargetHit( target:CTarget):void
     {
+      this.m_currentRound.getStatistic().incHit( target.toString());
+      this.m_totalStatistic.incHit( target.toString());
+
+      trace( this.m_totalStatistic);
     }
     protected function onTargetDispose():void
     {

@@ -50,7 +50,7 @@ package alx.duckhunt
       var nXForce:uint = 1 * this.getRoundNumber();
       if ( nXForce > 10)
         nXForce = 10;
-      return new CVector2f( nXForce, 60);
+      return new CVector2f( nXForce, 5);
     }
     public function getTargetMaxForce():CVector2f
     {

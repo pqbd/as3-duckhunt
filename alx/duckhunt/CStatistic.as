@@ -59,7 +59,6 @@ package alx.duckhunt
       this.m_targetCount.put( strKey, nCount);
       return this;
     }
-
     public function getShootsTotal():uint
     {
       return ( this.getHitTotal() + this.getMissTotal());
@@ -91,7 +90,6 @@ package alx.duckhunt
       else
         return 0;
     }
-
     public function getTargetCount():IMap
     {
       return this.m_targetCount;
@@ -100,10 +98,22 @@ package alx.duckhunt
     {
       return this.m_targetHitCount;
     }
-
     public function getScores():uint
     {
       return this.m_nScores;
+    }
+
+    public function toString():String
+    {
+      var strResult:String = '{';
+      strResult += 'Scores: '+this.getScores()+'; ';
+      strResult += 'Targets: '+this.getTargetTotal()+'; ';
+      strResult += 'Shoots: '+this.getShootsTotal()+'; ';
+      strResult += 'Hits: '+this.getHitTotal()+'; ';
+      strResult += 'Accuracy: '+this.getAccuracyPercent()+'%; ';
+      strResult += 'TargetCount: '+this.getTargetCount()+'; ';
+      strResult += 'TargetHitCount: '+this.getTargetHitCount()+'';
+      return strResult+'}';
     }
   }
 }
