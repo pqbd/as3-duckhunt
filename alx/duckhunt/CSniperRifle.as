@@ -26,11 +26,11 @@ package alx.duckhunt
     }
     public override function timeBetweenShots():uint
     {
-      return 2000;
+      return 1000;
     }
     public override function timeForReload():uint
     {
-      return 1000;
+      return 500;
     }
     public override function addToDisplay( display:DisplayObjectContainer):void
     {
@@ -65,7 +65,7 @@ package alx.duckhunt
     }
     protected override function onReloadStart():void
     {
-      this.m_aimAnimation.gotoAndPlay( 72);
+      this.m_aimAnimation.gotoAndPlay( 74);
       this.m_magazineAnimation.gotoAndStop( 2);
     }
     protected override function onReloadComplete():void

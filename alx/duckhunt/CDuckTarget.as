@@ -57,8 +57,8 @@ package alx.duckhunt
 
       var nDuckX:Number = nXCorrection * nMult;
       var nDuckY:Number = nYCorrection;
-      var nRadiusX:int = 8;
-      var nRadiusY:int = 8;
+      var nRadiusX:int = 12;
+      var nRadiusY:int = 10;
       var nHitX:Number = nX - this.getPosition().getX();
       var nHitY:Number = nY - this.getPosition().getY();
 
@@ -82,16 +82,17 @@ package alx.duckhunt
     }
     protected function hitTimerHandler( event:TimerEvent):void
     {
-      this.m_animation.gotoAndPlay( 23);
+      if ( this.m_animation != null)
+        this.m_animation.gotoAndPlay( 23);
       this.applyForce( new CVector2f( 0, 9.8));
     }
 
     public override function dispose():CTarget
     {
-      this.setState( CTarget.STATE_DISPOSED);
       if ( this.isHit())
         this.m_animation.gotoAndPlay( 45);
-      var timer:Timer = new Timer( 100, 1);
+      this.setState( CTarget.STATE_DISPOSED);
+      var timer:Timer = new Timer( 200, 1);
       timer.addEventListener( TimerEvent.TIMER, disposeTimerHandler);
       timer.start();
       return this;
@@ -103,7 +104,7 @@ package alx.duckhunt
       this.m_animation = null;
     }
 
-    
+
     public override function miss():CTarget
     {
       if ( !this.isMissed())

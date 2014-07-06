@@ -9,12 +9,14 @@ package alx.duckhunt
   implements IDisplayListener
   {
     private var m_bReady:Boolean;
+    private var m_bReload:Boolean;
     private var m_nNumberOfMagazines:int;
     private var m_magazine:CWeaponMagazine;
 
     public function CWeapon( nNumberOfMagazines:int = -1):void
     {
       this.setReady( true);
+      this.setReload( false);
       this.setNumberOfMagazines( nNumberOfMagazines);
       this.m_magazine = this.createMagazine();
     }
@@ -43,9 +45,18 @@ package alx.duckhunt
       this.m_bReady = bFlag;
       return this;
     }
+    protected function setReload( bFlag:Boolean):CWeapon
+    {
+      this.m_bReload = bFlag;
+      return this;
+    }
     public function isReady():Boolean
     {
-      return ( this.m_bReady && !this.m_magazine.isEmpty());
+      return ( this.m_bReady && !this.m_magazine.isEmpty() && !this.m_bReload);
+    }
+    protected function isReload():Boolean
+    {
+      return this.m_bReload;
     }
 
     public function setNumberOfMagazines( nNumber:int):CWeapon
@@ -92,7 +103,7 @@ package alx.duckhunt
     {
       if ( !this.m_magazine.isEmpty())
         this.setReady( true);
-    }    
+    }
     protected function onReloadStart():void
     {
     }
@@ -104,26 +115,30 @@ package alx.duckhunt
     }
     public function reload():CWeapon
     {
-      this.m_magazine.clear();
-      this.setReady( false);
-      if (( this.getNumberOfMagazines() < 0) || ( this.getNumberOfMagazines() > 0))
+      if ( !this.isReload())
       {
-        this.onReloadStart();
-        if ( this.getNumberOfMagazines() > 0)
-          this.incNumberOfMagazines( -1);        
-        var timer:Timer = new Timer( this.timeForReload(), 1);
-        timer.addEventListener( TimerEvent.TIMER, reloadTimeHandler);
-        timer.start();
+        this.m_magazine.clear();
+        this.setReload( true);
+        if (( this.getNumberOfMagazines() < 0) || ( this.getNumberOfMagazines() > 0))
+        {
+          this.onReloadStart();
+          if ( this.getNumberOfMagazines() > 0)
+            this.incNumberOfMagazines( -1);
+          var timer:Timer = new Timer( this.timeForReload(), 1);
+          timer.addEventListener( TimerEvent.TIMER, reloadTimeHandler);
+          timer.start();
+        }
+        else
+          this.onReloadFail();
       }
-      else
-        this.onReloadFail();
       return this;
     }
     protected function reloadTimeHandler( event:TimerEvent):void
     {
       this.m_magazine.reset();
-      this.onReloadComplete();
+      this.setReload( false);
       this.setReady( true);
+      this.onReloadComplete();
     }
 
     public function onDisplayResize( display:CDisplay, event:Event):void

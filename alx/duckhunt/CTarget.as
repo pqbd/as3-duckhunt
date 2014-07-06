@@ -82,8 +82,11 @@ package alx.duckhunt
     }
     protected function update():void
     {
-      this.m_displayObject.x = this.getPosition().getX();
-      this.m_displayObject.y = this.getPosition().getY();
+      if ( this.m_displayObject)
+      {
+        this.m_displayObject.x = this.getPosition().getX();
+        this.m_displayObject.y = this.getPosition().getY();
+      }
     }
 
     public function turnX():CTarget

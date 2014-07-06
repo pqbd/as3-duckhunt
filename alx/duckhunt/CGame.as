@@ -49,7 +49,7 @@ package alx.duckhunt
     {
       this.m_weapon = weapon;
       return this;
-    }    
+    }
 
 
     public function start( display:DisplayObjectContainer, random:CRandom = null):void
@@ -72,12 +72,6 @@ package alx.duckhunt
 
         this.m_targetEmitter = new CTargetEmitter();
         this.m_targetList.clear();
-        for ( var i:int = 0; i < 1; i++)
-        {
-          var target:CTarget = this.m_targetEmitter.EmitRandomOne( this.m_targetFactory, this.m_display.getSize(), random);
-          this.m_targetList.add( target);
-          target.addToDisplay( this.m_display);
-        }
       }
       else
         throw Error( 'Game not set');
@@ -120,8 +114,8 @@ package alx.duckhunt
               target.turnY();
             }
           }
-          target.move();
         }
+        target.move();
       }
       if ( bDisposed)
         this.onTargetDispose();
@@ -132,9 +126,6 @@ package alx.duckhunt
     }
     protected function onTargetHit( target:CTarget):void
     {
-      target = this.m_targetEmitter.EmitRandomOne( this.m_targetFactory, this.m_display.getSize(), null);
-      this.m_targetList.add( target);
-      target.addToDisplay( this.m_display);
     }
     protected function onTargetDispose():void
     {
@@ -164,13 +155,13 @@ package alx.duckhunt
                   bMiss = false;
                   this.onTargetHit( target);
                 }
-                else
-                  target.miss();
+                //else
+                //  target.miss();
               }
             }
             else
             if ( target.isDisposed())
-              this.m_targetList.remove( target);
+              iterator.remove();
           }
           if ( bMiss)
             this.onTargetMiss();
