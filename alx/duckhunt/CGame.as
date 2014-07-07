@@ -100,6 +100,7 @@ package alx.duckhunt
         this.m_targetEmitter.setMinForce( this.m_currentRound.getTargetMinForce())
                             .setMaxForce( this.m_currentRound.getTargetMaxForce())
                             ;
+        this.onRoundStart();
       }
       else
         bOk = false;
@@ -165,6 +166,16 @@ package alx.duckhunt
     protected function onTargetDispose():void
     {
     }
+    protected function onRoundFinish():void
+    {
+      if ( this.nextRound())
+        trace( this.m_totalStatistic);
+      else
+        trace( this.m_totalStatistic);
+    }
+    protected function onRoundStart():void
+    {
+    }
 
     protected function onMouseClickHandler( event:MouseEvent):void
     {
@@ -174,6 +185,8 @@ package alx.duckhunt
         var nBulletCount:int = arBullet.length;
         if ( nBulletCount > 0)
         {
+          this.m_currentRound.getStatistic().incShoots();
+          this.m_totalStatistic.incShoots();
           var bMiss:Boolean = true;
           var iterator:IIterator = this.m_targetList.iterator();
           while ( iterator.hasNext())

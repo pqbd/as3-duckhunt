@@ -2,12 +2,14 @@ package alx.duckhunt
 {
   import alx.common.util.IIterator;
   import alx.common.util.IMap;
+  import alx.common.util.IMapEntry;
   import alx.common.util.CHashMap;
 
   public class CStatistic
   {
     private var m_nScores:uint;
     private var m_nMiss:uint;
+    private var m_nShoots:uint;
 
     private var m_targetCount:IMap;
     private var m_targetHitCount:IMap;
@@ -22,46 +24,77 @@ package alx.duckhunt
 
     public function reset():CStatistic
     {
+      this.m_nShoots = 0;
       this.m_nMiss = 0;
       this.m_nScores = 0;
       this.m_targetCount.clear();
       this.m_targetHitCount.clear();
       return this;
     }
-    public function incScores( nOffset:int = 1):CStatistic
+    public function add( statistic:CStatistic):CStatistic
     {
-      if (( nOffset < 0) && ( this.m_nScores < nOffset))
-        this.m_nScores = 0;
-      else
-        this.m_nScores += nOffset;
+      this.incScores( statistic.getScores());
+      this.incMiss( statistic.getMissTotal());
+      this.incShoots( statistic.getShootsTotal());
+      var iterator:IIterator = statistic.m_targetCount.entrySet().iterator();
+      var entry:IMapEntry;
+      while ( iterator.hasNext())
+      {
+        entry = iterator.next() as IMapEntry;
+        this.incTarget(( entry.getKey() as String), ( entry.getValue() as uint));
+      }
+      iterator = statistic.m_targetHitCount.entrySet().iterator();
+      while ( iterator.hasNext())
+      {
+        entry = iterator.next() as IMapEntry;
+        this.incHit(( entry.getKey() as String), ( entry.getValue() as uint));
+      }
       return this;
     }
-    public function incHit( strKey:String):CStatistic
+    protected function inc( nVar:uint, nOffset:int = 1):uint
+    {
+      if (( nOffset < 0) && ( this.m_nScores < nOffset))
+        nVar = 0;
+      else
+        nVar += nOffset;
+      return nVar;
+    }
+    public function incScores( nOffset:int = 1):CStatistic
+    {
+      this.m_nScores = this.inc( this.m_nScores, nOffset);
+      return this;
+    }
+    public function incHit( strKey:String, nOffset:int = 1):CStatistic
     {
       var nCount:uint = 0;
       if ( this.m_targetHitCount.containsKey( strKey))
        nCount = this.m_targetHitCount.get( strKey) as uint;
-      nCount++;
+      nCount = this.inc( nCount, nOffset);
       this.m_targetHitCount.put( strKey, nCount);
       return this;
     }
-    public function incMiss():CStatistic
+    public function incMiss( nOffset:int = 1):CStatistic
     {
-      this.m_nMiss++;
+      this.m_nMiss = this.inc( this.m_nMiss, nOffset);
       return this;
     }
-    public function incTarget( strKey:String):CStatistic
+    public function incShoots( nOffset:int = 1):CStatistic
+    {
+      this.m_nShoots = this.inc( this.m_nShoots, nOffset);
+      return this;
+    }
+    public function incTarget( strKey:String, nOffset:int = 1):CStatistic
     {
       var nCount:uint = 0;
       if ( this.m_targetCount.containsKey( strKey))
        nCount = this.m_targetCount.get( strKey) as uint;
-      nCount++;
+      nCount = this.inc( nCount, nOffset);
       this.m_targetCount.put( strKey, nCount);
       return this;
     }
     public function getShootsTotal():uint
     {
-      return ( this.getHitTotal() + this.getMissTotal());
+      return this.m_nShoots;
     }
     public function getHitTotal():uint
     {
@@ -83,12 +116,19 @@ package alx.duckhunt
         nResult += this.m_targetCount.get( iterator.next());
       return nResult;
     }
-    public function getAccuracyPercent():Number
+    public function getAccuracyPercent( nMult:uint = 100):Number
     {
+      var nResult:Number = this.getAccuracyRate() * nMult;
+      if ( nResult > 100)
+        nResult = 100;
+      return nResult;
+    }
+    public function getAccuracyRate():Number
+    {
+      var nResult:Number = 0;
       if ( this.getShootsTotal() > 0)
-        return ( this.getHitTotal() / this.getShootsTotal() * 100);
-      else
-        return 0;
+        nResult = this.getHitTotal() / this.getShootsTotal();
+      return nResult;
     }
     public function getTargetCount():IMap
     {
