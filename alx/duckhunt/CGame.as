@@ -80,6 +80,19 @@ package alx.duckhunt
         throw Error( 'Game not set');
     }
 
+    protected function isRoundFinished():Boolean
+    {
+      var bOK:Boolean = false;
+      if ( this.m_currentRound == null)
+        bOK = true;
+      else
+      if ( this.m_currentRound.getStatistic().getTargetCount() == this.m_currentRound.getTargetTotal())
+      {
+        if ( this.m_targetList.isEmpty())
+          bOK = true;
+      }
+      return bOK;
+    }
     protected function nextRound():Boolean
     {
       this.m_targetList.clear();
@@ -88,11 +101,11 @@ package alx.duckhunt
       {
         if ( this.m_currentRound)
         {
-          var nBonusScore:uint = 500;
+          var nBonusScore:uint = 2000 * this.m_currentRound.getStatistic().getAccuracyRate();
           if ( this.m_currentRound.getStatistic().getAccuracyPercent() > 80)
-            nBonusScore += 1000;
-          if ( this.m_currentRound.getStatistic().getTargetCount() == this.m_currentRound.getStatistic().getTargetHitCount())
-            nBonusScore += 1000;
+            nBonusScore += 500;
+          if ( this.m_currentRound.getStatistic().getTargetTotal() == this.m_currentRound.getStatistic().getHitTotal())
+            nBonusScore += 500;
           this.m_currentRound.getStatistic().incScores( nBonusScore);
           this.m_totalStatistic.incScores( nBonusScore);
         }
@@ -238,6 +251,8 @@ package alx.duckhunt
     {
       if ( event.keyCode == Keyboard.SPACE)
       {
+        if ( this.isRoundFinished())
+          this.nextRound();
         var target:CTarget = this.m_targetEmitter.EmitRandomOne( this.m_currentRound.getTargetFactory(), this.m_display.getSize(), null);
         this.m_targetList.add( target);
         target.addToDisplay( this.m_display);

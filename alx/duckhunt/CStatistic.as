@@ -118,7 +118,9 @@ package alx.duckhunt
     }
     public function getAccuracyPercent( nMult:uint = 100):Number
     {
-      var nResult:Number = this.getAccuracyRate() * nMult;
+      var nResult:Number = 0;
+      if ( this.getShootsTotal() > 0)
+        nResult = ( this.getShootsTotal() - this.getMissTotal()) / this.getShootsTotal() * nMult;
       if ( nResult > 100)
         nResult = 100;
       return nResult;
@@ -151,6 +153,7 @@ package alx.duckhunt
       strResult += 'Shoots: '+this.getShootsTotal()+'; ';
       strResult += 'Hits: '+this.getHitTotal()+'; ';
       strResult += 'Accuracy: '+this.getAccuracyPercent()+'%; ';
+      strResult += 'AccuracyRate: '+this.getAccuracyRate()+'; ';
       strResult += 'TargetCount: '+this.getTargetCount()+'; ';
       strResult += 'TargetHitCount: '+this.getTargetHitCount()+'';
       return strResult+'}';

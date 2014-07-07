@@ -186,16 +186,21 @@ package test.alx.duckhunt
       statistic.incShoots().incHit( 'target2');
       statistic.incShoots().incMiss();
 
-      this.getTester().isEqual( 'statistic.getAccuracyPercent()'
+      this.getTester().isEqual( '1 statistic.getAccuracyPercent()'
                               , statistic.getAccuracyRate()
                               , 0.6
                               );
-
       statistic.reset();
       statistic.incShoots().incHit( 'target1', 3);
-      this.getTester().isEqual( 'statistic.getAccuracyPercent()'
+      this.getTester().isEqual( '2 statistic.getAccuracyPercent()'
                               , statistic.getAccuracyRate()
                               , 3
+                              );      
+      statistic.reset();
+      statistic.incShoots( 2).incHit( 'target1', 3).incMiss();
+      this.getTester().isEqual( '3 statistic.getAccuracyRate()'
+                              , statistic.getAccuracyRate()
+                              , 1.5
                               );
     }
     public function testGetAccuracyPercent():void
@@ -208,16 +213,21 @@ package test.alx.duckhunt
       statistic.incShoots().incHit( 'target2');
       statistic.incShoots().incMiss();
 
-      this.getTester().isEqual( 'statistic.getAccuracyPercent()'
+      this.getTester().isEqual( '1 statistic.getAccuracyPercent()'
                               , statistic.getAccuracyPercent()
                               , 60
                               );
-
       statistic.reset();
       statistic.incShoots().incHit( 'target1', 3);
-      this.getTester().isEqual( 'statistic.getAccuracyPercent()'
+      this.getTester().isEqual( '2 statistic.getAccuracyPercent()'
                               , statistic.getAccuracyPercent()
                               , 100
+                              );      
+      statistic.reset();
+      statistic.incShoots( 2).incHit( 'target1', 3).incMiss();
+      this.getTester().isEqual( '3 statistic.getAccuracyPercent()'
+                              , statistic.getAccuracyPercent()
+                              , 50
                               );
     }
     public function testAdd():void
