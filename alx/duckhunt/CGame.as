@@ -23,7 +23,6 @@ package alx.duckhunt
     private var m_arRound:Array;
     private var m_currentRound:CRound;
     private var m_nCurrentRoundIndex:uint;
-    private var m_totalStatistic:CStatistic;
     private var m_targetEmitter:CTargetEmitter;
     private var m_targetList:IList;
 
@@ -40,7 +39,6 @@ package alx.duckhunt
       this.m_targetList = new CArrayList();
       this.m_targetEmitter = new CTargetEmitter();
       this.m_nCurrentRoundIndex = 0;
-      this.m_totalStatistic = new CStatistic();
     }
 
     public function isReady():Boolean
@@ -86,7 +84,7 @@ package alx.duckhunt
       if ( this.m_currentRound == null)
         bOK = true;
       else
-      if ( this.m_currentRound.getStatistic().getTargetCount() == this.m_currentRound.getTargetTotal())
+      if ( this.m_currentRound.getStatistic().getTargetTotal() == this.m_currentRound.getTargetTotal())
       {
         if ( this.m_targetList.isEmpty())
           bOK = true;
@@ -107,7 +105,6 @@ package alx.duckhunt
           if ( this.m_currentRound.getStatistic().getTargetTotal() == this.m_currentRound.getStatistic().getHitTotal())
             nBonusScore += 500;
           this.m_currentRound.getStatistic().incScores( nBonusScore);
-          this.m_totalStatistic.incScores( nBonusScore);
         }
         this.m_currentRound = this.m_arRound[ this.m_nCurrentRoundIndex++];
         this.m_targetEmitter.setMinForce( this.m_currentRound.getTargetMinForce())
@@ -141,6 +138,7 @@ package alx.duckhunt
               {
                 target.dispose();
                 bDisposed = true;
+                iterator.remove();
               }
             }
             else
@@ -150,6 +148,7 @@ package alx.duckhunt
               {
                 target.dispose();
                 bDisposed = true;
+                iterator.remove();
               }
             }
             else
@@ -167,27 +166,57 @@ package alx.duckhunt
     protected function onTargetMiss():void
     {
       this.m_currentRound.getStatistic().incMiss();
-      this.m_totalStatistic.incMiss();
     }
     protected function onTargetHit( target:CTarget):void
     {
       this.m_currentRound.getStatistic().incHit( target.toString());
-      this.m_totalStatistic.incHit( target.toString());
-
-      trace( this.m_totalStatistic);
+      if ( this.m_currentRound.getTargetTotal() > this.m_currentRound.getStatistic().getTargetTotal())
+        this.emitTarget();
     }
+
+    protected function emitTarget( nCount:uint = 1):void
+    {
+      var timer:Timer = new Timer( 100, nCount);
+      timer.addEventListener( TimerEvent.TIMER, emitTargetTimerHandler);
+      timer.start();
+    }
+    protected function emitTargetTimerHandler( event:TimerEvent):void
+    {
+      var target:CTarget = this.m_targetEmitter.EmitRandomOne( this.m_currentRound.getTargetFactory(), this.m_display.getSize(), null);
+      this.m_targetList.add( target);
+      target.addToDisplay( this.m_display);
+      this.m_currentRound.getStatistic().incTarget( target.toString());
+    }
+    
     protected function onTargetDispose():void
     {
+      if ( this.isRoundFinished())
+        this.onRoundFinish();
+    }
+    protected function roundResults( round:CRound):void
+    {
+      trace( round.getStatistic());
+    }
+    protected function gameResults( round:CRound, arRound:Array):void
+    {
+      var totalStatistic:CStatistic = new CStatistic();
+      for ( var i:int = 0; i < arRound.length; i++)
+        totalStatistic.add( arRound[ i].getStatistic());
+
+      trace( round.getStatistic());
+      trace( totalStatistic);
     }
     protected function onRoundFinish():void
     {
+      var round:CRound = this.m_currentRound;
       if ( this.nextRound())
-        trace( this.m_totalStatistic);
+        this.roundResults( round);
       else
-        trace( this.m_totalStatistic);
+        this.gameResults( round, this.m_arRound);
     }
     protected function onRoundStart():void
     {
+      this.emitTarget( this.m_currentRound.getTargetLimit());
     }
 
     protected function onMouseClickHandler( event:MouseEvent):void
@@ -199,7 +228,6 @@ package alx.duckhunt
         if ( nBulletCount > 0)
         {
           this.m_currentRound.getStatistic().incShoots();
-          this.m_totalStatistic.incShoots();
           var bMiss:Boolean = true;
           var iterator:IIterator = this.m_targetList.iterator();
           while ( iterator.hasNext())
@@ -218,9 +246,9 @@ package alx.duckhunt
                 }
               }
             }
-            else
-            if ( target.isDisposed())
-              iterator.remove();
+            //else
+            //if ( target.isDisposed())
+            //  iterator.remove();
           }
           if ( bMiss)
             this.onTargetMiss();
@@ -253,9 +281,6 @@ package alx.duckhunt
       {
         if ( this.isRoundFinished())
           this.nextRound();
-        var target:CTarget = this.m_targetEmitter.EmitRandomOne( this.m_currentRound.getTargetFactory(), this.m_display.getSize(), null);
-        this.m_targetList.add( target);
-        target.addToDisplay( this.m_display);
       }
       else
       if ( event.keyCode == Keyboard.R)
