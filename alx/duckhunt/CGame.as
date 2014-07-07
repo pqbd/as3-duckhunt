@@ -91,21 +91,25 @@ package alx.duckhunt
       }
       return bOK;
     }
+    protected function addScores():void
+    {
+      if ( this.m_currentRound)
+      {
+        var nBonusScore:uint = 2000 * this.m_currentRound.getStatistic().getAccuracyRate();
+        if ( this.m_currentRound.getStatistic().getAccuracyPercent() > 80)
+          nBonusScore += 500;
+        if ( this.m_currentRound.getStatistic().getTargetTotal() == this.m_currentRound.getStatistic().getHitTotal())
+          nBonusScore += 500;
+        this.m_currentRound.getStatistic().incScores( nBonusScore);
+      }
+    }
     protected function nextRound():Boolean
     {
       this.m_targetList.clear();
       var bOk:Boolean = true;
+      this.addScores();
       if ( this.m_nCurrentRoundIndex < this.m_arRound.length)
-      {
-        if ( this.m_currentRound)
-        {
-          var nBonusScore:uint = 2000 * this.m_currentRound.getStatistic().getAccuracyRate();
-          if ( this.m_currentRound.getStatistic().getAccuracyPercent() > 80)
-            nBonusScore += 500;
-          if ( this.m_currentRound.getStatistic().getTargetTotal() == this.m_currentRound.getStatistic().getHitTotal())
-            nBonusScore += 500;
-          this.m_currentRound.getStatistic().incScores( nBonusScore);
-        }
+      {        
         this.m_currentRound = this.m_arRound[ this.m_nCurrentRoundIndex++];
         this.m_targetEmitter.setMinForce( this.m_currentRound.getTargetMinForce())
                             .setMaxForce( this.m_currentRound.getTargetMaxForce())

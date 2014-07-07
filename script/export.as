@@ -19,6 +19,24 @@ game.Init( new CRound( new CRandomTargetFactory( null
                       , 2
                       , 10
                       )
+          , new CRound( new CRandomTargetFactory( null
+                                               , new CDuckTargetFactory( _MCDuck)
+                                               , new CDuckTargetFactory( _MCDrake)
+                                               , new CDuckTargetFactory( _MCDuckDuck)
+                                               //, new CDuckTargetFactory( _MCDrake, _MCDuck)
+                                               )
+                      , 4
+                      , 10
+                      )
+          , new CRound( new CRandomTargetFactory( null
+                                               , new CDuckTargetFactory( _MCDuck)
+                                               , new CDuckTargetFactory( _MCDrake)
+                                               , new CDuckTargetFactory( _MCDuckDuck)
+                                               //, new CDuckTargetFactory( _MCDrake, _MCDuck)
+                                               )
+                      , 8
+                      , 15
+                      )
           );
 
 var display:DisplayObjectContainer = this.parent;
