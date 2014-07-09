@@ -1,36 +1,70 @@
 package alx.duckhunt
 {
-  import flash.display.DisplayObjectContainer;
-  import flash.display.StageAlign;
-  import flash.display.StageScaleMode;
   import flash.utils.Timer;
-  import flash.ui.Mouse;
-  import flash.ui.Keyboard;
   import flash.events.Event;
   import flash.events.TimerEvent;
-  import flash.events.MouseEvent;
-  import flash.events.KeyboardEvent;
 
   import alx.common.util.CRandom;
 
   public class CDuckHuntGame extends CGame
   {
-    public function CDuckHuntGame():void
+    public function CDuckHuntGame( ...arRound):void
     {
-      tsuper();
+      super( arRound);
     }
 
-    public function setCursor():CGame
+    public function setDog():CDuckHuntGame
     {
+      return this;
     }
-    protected function onTargetMiss():void
+    public function setHeadShot():CDuckHuntGame
     {
+      return this;
     }
-    protected function onTargetHit():void
+    public function setCloudFactory():CDuckHuntGame
     {
+      return this;
     }
-    protected function onTargetDispose():void
+    public function setGameStart():CDuckHuntGame
     {
+      return this;
+    }
+    public function setGameOver():CDuckHuntGame
+    {
+      return this;
+    }
+    public function setGameRound():CDuckHuntGame
+    {
+      return this;
+    }
+
+    protected override function onTargetMiss():void
+    {
+      super.onTargetMiss();
+    }
+    protected override function onTargetHit( target:CTarget):void
+    {
+      super.onTargetHit( target);
+    }
+    protected override function onTargetDispose():void
+    {
+      super.onTargetDispose();
+    }
+    protected override function roundResults( round:CRound, arRound:Array):void
+    {
+      super.roundResults( round, arRound);
+    }
+    protected override function gameResults( round:CRound, arRound:Array):void
+    {
+      super.gameResults( round, arRound);
+    }
+    protected override function onRoundFinish():void
+    {
+      super.onRoundFinish();
+    }
+    protected override function onRoundStart():void
+    {
+      super.onRoundStart();
     }
   }
 }

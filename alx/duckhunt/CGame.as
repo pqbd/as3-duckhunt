@@ -197,7 +197,7 @@ package alx.duckhunt
       if ( this.isRoundFinished())
         this.onRoundFinish();
     }
-    protected function roundResults( round:CRound):void
+    protected function roundResults( round:CRound, arRound:Array):void
     {
       trace( round.getStatistic());
     }
@@ -214,7 +214,7 @@ package alx.duckhunt
     {
       var round:CRound = this.m_currentRound;
       if ( this.nextRound())
-        this.roundResults( round);
+        this.roundResults( round, this.m_arRound);
       else
         this.gameResults( round, this.m_arRound);
     }
