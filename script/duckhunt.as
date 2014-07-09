@@ -1,16 +1,25 @@
 import flash.display.DisplayObjectContainer;
-import alx.duckhunt.CVector2f
-import alx.duckhunt.CRandomTargetFactory
-import alx.duckhunt.CDuckTargetFactory
-import alx.duckhunt.CSniperRifle
-import alx.duckhunt.CRound
-import alx.duckhunt.CDuckHuntGame
+import alx.duckhunt.CVector2f;
+import alx.duckhunt.CRandomTargetFactory;
+import alx.duckhunt.CDuckTargetFactory;
+import alx.duckhunt.CCloudTargetFactory;
+import alx.duckhunt.CSniperRifle;
+import alx.duckhunt.CRound;
+import alx.duckhunt.CDuckHuntGame;
 //import flash.events.*
 //import flash.media.Sound;
 //import flash.media.SoundChannel;
 
 var game:CDuckHuntGame = new CDuckHuntGame();
-game.setWeapon( new CSniperRifle( new _MCSniperRiffle(), new _MCSniperRiffleRound(), -1));
+game.setDog( new _MCDog())
+    //.setHeadShot( new _MCHeadShot())
+    .setCloudFactory( new CCloudTargetFactory( _MCCloud))
+    .setGameStart( new _MCGameStart())
+    .setGameOver( new _MCGameOver())
+    .setGameRound( new _MCGameRound())
+    .setGameRoundOver( new _MCGameRoundOver())
+    .setWeapon( new CSniperRifle( new _MCSniperRiffle(), new _MCSniperRiffleRound(), -1))
+    ;
 game.Init( new CRound( new CRandomTargetFactory( null
                                                , new CDuckTargetFactory( _MCDuck)
                                                , new CDuckTargetFactory( _MCDrake)

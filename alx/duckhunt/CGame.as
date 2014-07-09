@@ -54,6 +54,17 @@ package alx.duckhunt
       return this;
     }
 
+    protected function getDisplay():CDisplay
+    {
+      return this.m_display;
+    }
+    protected function prepare():void
+    {
+      this.m_display.addDisplayListener( this);
+
+      this.m_weapon.addToDisplay( this.m_display.getSrc().parent);
+      this.m_display.addDisplayListener( this.m_weapon);
+    }
     public function start( display:DisplayObjectContainer, random:CRandom = null):void
     {
       if ( this.isReady())
@@ -63,16 +74,13 @@ package alx.duckhunt
         var timer:Timer = new Timer( 10);
         timer.addEventListener( TimerEvent.TIMER, timerHandler);
         timer.start();
-
-        this.m_weapon.addToDisplay( display.parent);
+        
         Mouse.hide();
         display.stage.addEventListener( MouseEvent.MOUSE_MOVE, onMouseMoveHandler);
         display.stage.addEventListener( MouseEvent.MOUSE_UP, onMouseClickHandler);
-        display.stage.addEventListener( KeyboardEvent.KEY_DOWN, onKeyDownEventHandler);
-        this.m_display.addDisplayListener( this);
-        this.m_display.addDisplayListener( this.m_weapon);
+        display.stage.addEventListener( KeyboardEvent.KEY_DOWN, onKeyDownEventHandler);        
 
-        this.nextRound();
+        this.prepare();
       }
       else
         throw Error( 'Game not set');
@@ -106,8 +114,7 @@ package alx.duckhunt
     protected function nextRound():Boolean
     {
       this.m_targetList.clear();
-      var bOk:Boolean = true;
-      this.addScores();
+      var bOk:Boolean = true;      
       if ( this.m_nCurrentRoundIndex < this.m_arRound.length)
       {        
         this.m_currentRound = this.m_arRound[ this.m_nCurrentRoundIndex++];
@@ -212,11 +219,8 @@ package alx.duckhunt
     }
     protected function onRoundFinish():void
     {
-      var round:CRound = this.m_currentRound;
-      if ( this.nextRound())
-        this.roundResults( round, this.m_arRound);
-      else
-        this.gameResults( round, this.m_arRound);
+      this.addScores();
+      this.roundResults( this.m_currentRound, this.m_arRound);
     }
     protected function onRoundStart():void
     {
@@ -274,6 +278,8 @@ package alx.duckhunt
     }
     protected function onMouseMoveHandler( event:MouseEvent):void
     {
+      // sometimes it is needed
+      Mouse.hide();
       if ( this.m_weapon)
         this.m_weapon.updatePosition( new CVector2f( event.stageX, event.stageY));
     }
@@ -297,7 +303,10 @@ package alx.duckhunt
       if ( event.keyCode == Keyboard.SPACE)
       {
         if ( this.isRoundFinished())
-          this.nextRound();
+        {
+          if ( !this.nextRound())
+            this.gameResults( this.m_currentRound, this.m_arRound);
+        }
       }
       else
       if ( event.keyCode == Keyboard.R)
