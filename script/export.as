@@ -1,4 +1,5 @@
 import flash.display.DisplayObjectContainer;
+import alx.duckhunt.CVector2f
 import alx.duckhunt.CRandomTargetFactory
 import alx.duckhunt.CDuckTargetFactory
 import alx.duckhunt.CSniperRifle
@@ -14,6 +15,8 @@ game.Init( new CRound( new CRandomTargetFactory( null
                                                , new CDuckTargetFactory( _MCDuck)
                                                , new CDuckTargetFactory( _MCDrake)
                                                , new CDuckTargetFactory( _MCDuckDuck)
+                                                      .setXTurnLimit( new CVector2f( 5, 10))
+                                                      .setUseFear( true, 1)
                                                //, new CDuckTargetFactory( _MCDrake, _MCDuck)
                                                )
                       , 2

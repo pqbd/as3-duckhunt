@@ -221,6 +221,19 @@ package alx.duckhunt
     protected function onRoundStart():void
     {
       this.emitTarget( this.m_currentRound.getTargetLimit());
+
+      // test clouds
+      var f = new CCloudTargetFactory( _MCCloud);
+      f.setSizeLimit( new CVector2f( 1, 5));
+      f.randomize();
+      var t1 = f.createTarget( new CVector2f( 50, 70),  new CVector2f( 3, 0));
+      t1.addToDisplay( this.m_display);
+      f.randomize();
+      var t2 = f.createTarget( new CVector2f( 300, 150),  new CVector2f( 3, 0));
+      t2.addToDisplay( this.m_display);
+      f.randomize();
+      var t3 = f.createTarget( new CVector2f( 700, 400),  new CVector2f( 3, 0));
+      t3.addToDisplay( this.m_display);
     }
 
     protected function onMouseClickHandler( event:MouseEvent):void

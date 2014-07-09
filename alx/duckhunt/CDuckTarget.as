@@ -7,31 +7,57 @@ package alx.duckhunt
   public class CDuckTarget extends CTarget
   {
     private var m_animation:MovieClip;
+    private var m_nXTurns:int;
+    private var m_bFear:Boolean;
 
     public function CDuckTarget( positionVector:CVector2f
                               , forceVector:CVector2f
                               , animation:MovieClip
-                              , bTurn:Boolean = false
+                              , bTurn:Boolean = false                              
+                              , nXTurns:int = -1
+                              , bFear:Boolean = false
                               ):void
     {
       super( positionVector, forceVector, animation);
       this.m_animation = animation;
+      if ( nXTurns < 0)
+        nXTurns = -1;
+      this.m_nXTurns = nXTurns;
+      this.m_bFear = bFear;
       this.m_animation.gotoAndPlay( 1);
       if ( bTurn)
+      {
+        if ( this.m_nXTurns > -1)
+          this.m_nXTurns++;
         this.turnX();
+      }
+    }
+
+    public function getXTurns():int
+    {
+      return this.m_nXTurns;
+    }
+    public function isFear():Boolean
+    {
+      return this.m_bFear;
     }
 
     public override function turnX():CTarget
     {
       this.m_animation.scaleX *= -1;
-      return super.turnX();
+      super.turnX();
+      if ( this.m_nXTurns == 0)
+        this.miss();
+      else
+      if ( this.m_nXTurns > 0)
+        this.m_nXTurns--;
+      return this;
     }
     public override function turnY():CTarget
     {
       if ( this.isState( CTarget.STATE_OK))
-        return super.turnY();
-      else
-        return this;
+        super.turnY();
+      return this;
     }
 
     public override function checkHit( nX:int, nY:int):Boolean
@@ -67,6 +93,10 @@ package alx.duckhunt
                          ;
       if( nTest <= 1)
         bHit = true;
+      else
+      if ( this.m_bFear)
+      if ( nTest <= 3)
+        this.turnX();
       return bHit;
     }
 
