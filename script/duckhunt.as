@@ -11,8 +11,12 @@ import alx.duckhunt.CDuckHuntGame;
 //import flash.media.SoundChannel;
 
 var game:CDuckHuntGame = new CDuckHuntGame();
+
+if ( this.stage.loaderInfo.parameters.name != undefined)
+  game.setPlayerName( this.stage.loaderInfo.parameters.name);
+
 game.setDog( new _MCDog())
-    //.setHeadShot( new _MCHeadShot())
+    .setHeadShotClass( _MCHeadShot)
     .setCloudFactory( new CCloudTargetFactory( _MCCloud))
     .setGameStart( new _MCGameStart())
     .setGameOver( new _MCGameOver())
@@ -31,7 +35,9 @@ game.Init( new CRound( new CRandomTargetFactory( null
                       , 2
                       , 10
                       )
-          , new CRound( new CRandomTargetFactory( null
+                    .setSetting( CDuckHuntGame.CLOUD_SIZE, new CVector2f( 1, 5))
+                    .setSetting( CDuckHuntGame.CLOUD_SPEED, new CVector2f( 1, 3))
+          /*, new CRound( new CRandomTargetFactory( null
                                                , new CDuckTargetFactory( _MCDuck)
                                                , new CDuckTargetFactory( _MCDrake)
                                                , new CDuckTargetFactory( _MCDuckDuck)
@@ -48,7 +54,7 @@ game.Init( new CRound( new CRandomTargetFactory( null
                                                )
                       , 8
                       , 15
-                      )
+                      )*/
           );
 
 var display:DisplayObjectContainer = this.parent;
@@ -58,22 +64,6 @@ display.stage.scaleMode = StageScaleMode.NO_SCALE;
 game.start( display);
 
 /*
-game.SetDuck1( _MCDuck1)
-    .SetDuck2( _MCDuck2)
-    .SetDog( _MCDog)
-    .SetTarget( _MCTarget)
-    .SetHeadshot( _MCHeadshot)
-    .SetPatron( _MCPatron)
-    .SetScores( _MCScores)
-    ;
-
-game.SetPlayerName( 'Player');
-
-if ( this.parent)
-  game.Run( this.parent);
-else
-  game.Run( root);
-
 var sound:Sound = new SDuckSong();
 var soundChanel:SoundChannel = sound.play();
 soundChanel.addEventListener( Event.SOUND_COMPLETE, MainSongCompleteHandler);

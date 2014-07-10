@@ -5,6 +5,8 @@ package alx.duckhunt
 
   public class CTarget
   {
+    private static var s_nIdCounter:uint = 1;
+    private var m_nId:uint;
     private var m_positionVector:CVector2f;
     private var m_speedVector:CVector2f;
     private var m_displayObject:DisplayObject;
@@ -20,6 +22,7 @@ package alx.duckhunt
                             , displayObject:DisplayObject
                             ):void
     {
+      this.m_nId = CTarget.s_nIdCounter++;
       this.m_displayObject = displayObject;
       this.setSpeed( new CVector2f()).applyForce( forceVector);
       this.setPosition( positionVector);
@@ -29,6 +32,11 @@ package alx.duckhunt
     public function getWeight()
     {
       return 1;
+    }
+
+    public function getId():uint
+    {
+      return this.m_nId;
     }
 
     public function applyForce( forceVector:CVector2f):CTarget
@@ -79,6 +87,17 @@ package alx.duckhunt
     public function getDisplayObject():DisplayObject
     {
       return this.m_displayObject;
+    }
+    public function getSize():CVector2f
+    {
+      var nWidth:Number = 0;
+      var nHeight:Number = 0;
+      if ( this.m_displayObject)
+      {
+        nWidth = this.m_displayObject.width;
+        nHeight = this.m_displayObject.height;
+      }
+      return new CVector2f( nWidth, nHeight);
     }
     protected function update():void
     {
