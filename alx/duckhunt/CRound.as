@@ -61,14 +61,14 @@ package alx.duckhunt
     }
     public function getTargetMinForce():CVector2f
     {
-      var nXForce:uint = 1 * this.getRoundNumber();
+      var nXForce:uint = 0.5 * this.getRoundNumber();
       if ( nXForce > 10)
         nXForce = 10;
       return new CVector2f( nXForce, 5);
     }
     public function getTargetMaxForce():CVector2f
     {
-      var nXForce:uint = 2 * this.getRoundNumber();
+      var nXForce:uint = 1 * this.getRoundNumber();
       if ( nXForce > 20)
         nXForce = 11;
       else

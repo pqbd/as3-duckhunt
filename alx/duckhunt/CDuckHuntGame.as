@@ -16,7 +16,7 @@ package alx.duckhunt
     private var m_headShotClass:Class;
     private var m_headShotList:CArrayList;
 
-    private var m_cloudFactory:CTargetFactory;
+    private var m_cloudFactory:CCloudTargetFactory;
     private var m_cloudTargetList:CArrayList;
     
     private var m_dog:MovieClip;
@@ -25,6 +25,7 @@ package alx.duckhunt
     private var m_gameRound:MovieClip;
     private var m_gameRoundOver:MovieClip;
 
+    public static const CLOUD_RATE:String = 'cloud-rate';
     public static const CLOUD_SIZE:String = 'cloud-size';
     public static const CLOUD_SPEED:String = 'cloud-speed';
 
@@ -102,26 +103,39 @@ package alx.duckhunt
       return bOk;
     }
 
-    protected function emitCloud( nCount:uint, bInit:Boolean = false):void
+    protected function emitCloud( nCount:uint, bOnDisplay:Boolean = false):void
     {
-      if ( bInit)
+      var random:CRandom = new CRandom();
+
+      for ( var i:int = 0; i < nCount; i++)
       {
-        
-      }
-      else
-      {
-        var timer:Timer = new Timer( 1000, nCount);
-        timer.addEventListener( TimerEvent.TIMER, emitCloudTimerHandler);
-        timer.start();
+        this.m_cloudFactory.randomize( random);
+        var position:CVector2f;
+        if ( bOnDisplay)
+        {
+          position = new CVector2f( random.nextInt( 0, this.getDisplay().getWidth())
+                                  , random.nextInt( 0, this.getDisplay().getHeight())
+                                  );
+        }
+        else
+        {
+          position = new CVector2f( random.nextInt( this.getDisplay().getWidth(), this.getDisplay().getWidth() * 2)
+                                  , random.nextInt( 0, this.getDisplay().getHeight())
+                                  );
+        }
+
+        var forceLimit:CVector2f = this.getCurrentRound().getSetting( CDuckHuntGame.CLOUD_SPEED) as CVector2f;
+        var force:CVector2f = new CVector2f( -random.nextFloat( forceLimit.getX(), forceLimit.getY())
+                                            , 0
+                                            ); 
+        var cloud:CTarget = this.m_cloudFactory.createTarget( position
+                                                            , force
+                                                            );
+        this.m_cloudTargetList.add( cloud);
+        cloud.addToDisplay( this.getDisplay());
       }
     }
-    protected function emitCloudTimerHandler( event:TimerEvent):void
-    {
-      //this.m_cloudFactory.randomize();
-      //var cloud:CTarget = this.m_cloudFactory.createTarget( );
-      //this.m_cloudTargetList.add( cloud);
-      //cloud.addToDisplay( this.m_display);
-    }
+
     protected override function timerHandler( event:TimerEvent):void
     {
       super.timerHandler( event);
@@ -132,9 +146,9 @@ package alx.duckhunt
         target.move();
         if ( target.getPosition().getX() < -target.getSize().getX())
         {
-          //target.dispose();
-          //iterator.remove();
-          //this.emitCloud();
+          target.dispose();
+          iterator.remove();
+          this.emitCloud( 1);
         }
       }
     }
@@ -231,6 +245,10 @@ package alx.duckhunt
       this.m_gameOver.visible = false;
       this.m_gameRound.visible = true;
       this.m_gameRound.gotoAndPlay( 1);
+      
+      this.m_cloudFactory.setSizeLimit( this.getCurrentRound().getSetting( CDuckHuntGame.CLOUD_SIZE) as CVector2f);
+
+      this.emitCloud( this.getCurrentRound().getSetting( CDuckHuntGame.CLOUD_RATE) as int, true);
 
       super.onRoundStart();
     }

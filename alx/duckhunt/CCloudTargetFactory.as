@@ -13,7 +13,7 @@ package alx.duckhunt
     {
       super();
       this.m_arAnimationClass = arAnimationClass;
-      this.setSizeLimit( new CVector2f( 0, 1));
+      this.setSizeLimit( new CVector2f( 1, 1));
     }
 
     public function setSizeLimit( limitVector:CVector2f):CCloudTargetFactory
@@ -36,8 +36,8 @@ package alx.duckhunt
           var nAnimation:int = random.nextInt( 0, this.m_arAnimationClass.length);
           var animationClass:Class = this.m_arAnimationClass[ nAnimation];
           var animationPart:MovieClip = new animationClass();
-          animationPart.x = random.nextInt( 0, this.m_animation.width / 1.3 + 1);
-          animationPart.y = random.nextInt( 0, this.m_animation.height / 1.5 + 1);
+          animationPart.x = random.nextInt( 0, this.m_animation.width / 1.3);
+          animationPart.y = random.nextInt( 0, this.m_animation.height / 1.5);
           this.m_animation.addChild( animationPart);
         }
         this.m_animation.cacheAsBitmap = true;
