@@ -116,6 +116,17 @@ package alx.duckhunt
         nResult += this.m_targetCount.get( iterator.next());
       return nResult;
     }
+    public function getFinishPercent( nMult:uint = 100):Number
+    {
+      return ( this.getFinishRate() * nMult);
+    }
+    public function getFinishRate():Number
+    {
+      var nResult:Number = 0;
+      if ( this.getTargetTotal() > 0)
+        nResult = this.getHitTotal() / this.getTargetTotal();
+      return nResult;
+    }
     public function getAccuracyPercent( nMult:uint = 100):Number
     {
       var nResult:Number = 0;
@@ -154,6 +165,8 @@ package alx.duckhunt
       strResult += 'Hits: '+this.getHitTotal()+'; ';
       strResult += 'Accuracy: '+this.getAccuracyPercent()+'%; ';
       strResult += 'AccuracyRate: '+this.getAccuracyRate()+'; ';
+      strResult += 'Finish: '+this.getFinishPercent()+'%; ';
+      strResult += 'FinishRate: '+this.getFinishRate()+'; ';
       strResult += 'TargetCount: '+this.getTargetCount()+'; ';
       strResult += 'TargetHitCount: '+this.getTargetHitCount()+'';
       return strResult+'}';

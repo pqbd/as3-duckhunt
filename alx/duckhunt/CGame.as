@@ -102,12 +102,15 @@ package alx.duckhunt
     protected function addScores():void
     {
       if ( this.m_currentRound != null)
-      {
-        var nBonusScore:uint = this.m_currentRound.getScore() * this.m_currentRound.getStatistic().getAccuracyRate();
+      {      
+        var nBonusScore:uint = this.m_currentRound.getScore() 
+                              * this.m_currentRound.getStatistic().getAccuracyRate()
+                              * this.m_currentRound.getStatistic().getFinishRate()
+                              ;
         if ( this.m_currentRound.getStatistic().getAccuracyPercent() > 80)
           nBonusScore += 200;
-        if ( this.m_currentRound.getStatistic().getTargetTotal() == this.m_currentRound.getStatistic().getHitTotal())
-          nBonusScore += 100;
+        if ( this.m_currentRound.getStatistic().getFinishPercent() == 100)
+          nBonusScore += 200;
         this.m_currentRound.getStatistic().incScores( nBonusScore);
       }
     }
@@ -180,13 +183,11 @@ package alx.duckhunt
 
     protected function onTargetMiss():void
     {
-      this.m_currentRound.getStatistic().incMiss();
+      this.m_currentRound.getStatistic().incMiss();      
     }
     protected function onTargetHit( target:CTarget):void
     {
       this.m_currentRound.getStatistic().incHit( target.toString());
-      if ( this.m_currentRound.getTargetTotal() > this.m_currentRound.getStatistic().getTargetTotal())
-        this.emitTarget();
     }
 
     protected function emitTarget( nCount:uint = 1):void
@@ -205,6 +206,8 @@ package alx.duckhunt
     
     protected function onTargetDispose():void
     {
+      if ( this.m_currentRound.getTargetTotal() > this.m_currentRound.getStatistic().getTargetTotal())
+        this.emitTarget();
       if ( this.isRoundFinished())
         this.onRoundFinish();
     }
