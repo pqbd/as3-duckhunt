@@ -99,19 +99,22 @@ package alx.duckhunt
       }
       return bOK;
     }
-    protected function addScores():void
+    protected function addScore():void
     {
       if ( this.m_currentRound != null)
       {      
-        var nBonusScore:uint = this.m_currentRound.getScore() 
-                              * this.m_currentRound.getStatistic().getAccuracyRate()
+        var nRoundScore:uint = this.m_currentRound.getScore()
                               * this.m_currentRound.getStatistic().getFinishRate()
                               ;
+
+        var nBonusScore:uint = 0;
         if ( this.m_currentRound.getStatistic().getAccuracyPercent() > 80)
-          nBonusScore += 200;
+          nBonusScore += 100 * this.m_currentRound.getId();
         if ( this.m_currentRound.getStatistic().getFinishPercent() == 100)
-          nBonusScore += 200;
-        this.m_currentRound.getStatistic().incScores( nBonusScore);
+          nBonusScore += 100 * this.m_currentRound.getId();
+        nBonusScore *= this.m_currentRound.getStatistic().getAccuracyRate();
+
+        this.m_currentRound.getStatistic().incScores(( nRoundScore + nBonusScore));
       }
     }
     protected function getCurrentRound():CRound
@@ -154,6 +157,7 @@ package alx.duckhunt
             {
               if ( target.getPosition().getY() > this.m_display.getHeight())
               {
+                target.move();
                 target.dispose();
                 bDisposed = true;
                 iterator.remove();
@@ -164,6 +168,7 @@ package alx.duckhunt
             {
               if ( target.getPosition().getY() < 0)
               {
+                target.move();
                 target.dispose();
                 bDisposed = true;
                 iterator.remove();
@@ -183,7 +188,7 @@ package alx.duckhunt
 
     protected function onTargetMiss():void
     {
-      this.m_currentRound.getStatistic().incMiss();      
+      this.m_currentRound.getStatistic().incMiss();
     }
     protected function onTargetHit( target:CTarget):void
     {
@@ -206,6 +211,7 @@ package alx.duckhunt
     
     protected function onTargetDispose():void
     {
+      if ( this.m_currentRound != null)
       if ( this.m_currentRound.getTargetTotal() > this.m_currentRound.getStatistic().getTargetTotal())
         this.emitTarget();
       if ( this.isRoundFinished())
@@ -226,7 +232,7 @@ package alx.duckhunt
     }
     protected function onRoundFinish():void
     {
-      this.addScores();
+      this.addScore();
       this.roundResults( this.m_currentRound, this.m_arRound);
     }
     protected function onRoundStart():void
@@ -263,9 +269,6 @@ package alx.duckhunt
                   }
                 }
               }
-              //else
-              //if ( target.isDisposed())
-              //  iterator.remove();
             }
             if ( bMiss)
               this.onTargetMiss();
@@ -295,15 +298,20 @@ package alx.duckhunt
         target.setPosition( new CVector2f( nX, nY));
       }
     }
+    protected function checkGameOver():Boolean
+    {
+      return ( this.m_nCurrentRoundIndex == this.m_arRound.length);
+        
+    }
     protected function onKeyDownEventHandler( event:KeyboardEvent):void
     {
       if ( event.keyCode == Keyboard.SPACE)
       {
         if ( this.isRoundFinished())
-        {
-          if ( !this.nextRound())
-            this.gameResults( this.m_currentRound, this.m_arRound);
-        }
+        if ( this.checkGameOver())
+          this.gameResults( this.m_currentRound, this.m_arRound);
+        else
+          this.nextRound();
       }
       else
       if ( event.keyCode == Keyboard.R)

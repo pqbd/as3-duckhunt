@@ -222,6 +222,7 @@ package alx.duckhunt
 
       this.m_gameRoundOver.c_acuracy.text = round.getStatistic().getAccuracyPercent().toFixed( 2)+'%';
       this.m_gameRoundOver.c_score.text = round.getStatistic().getScores();
+      this.m_gameRoundOver.c_round.text = round.getId();
       this.m_gameRoundOver.visible = true;
     }
     protected override function gameResults( round:CRound, arRound:Array):void
@@ -278,6 +279,20 @@ package alx.duckhunt
 
       this.m_gameOver.x = display.getWidth() / 2;
       this.m_gameOver.y = display.getHeight() / 2;
+    }
+
+    protected override function checkGameOver():Boolean
+    {
+      var bOver:Boolean = false;
+      if ( super.checkGameOver())
+         bOver = true;
+      else
+      {
+        if ( this.getCurrentRound() != null)
+        if ( this.getCurrentRound().getStatistic().getFinishPercent() < 50)
+          bOver = true;
+      }
+      return bOver;
     }
   }
 }

@@ -150,9 +150,12 @@ package alx.duckhunt
     }
     protected function missTimerHandler( event:TimerEvent):void
     {
+      if ( !this.isDisposed())
       if ( this.m_animation != null)
+      {
         this.m_animation.gotoAndPlay( 66);
-      this.getSpeed().set( 0, -this.getSpeed().norm());
+        this.getSpeed().set( 0, -this.getSpeed().norm());
+      }
     }
   }
 }

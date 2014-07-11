@@ -50,7 +50,10 @@ package alx.duckhunt
     {
       return this.m_nScore;
     }
-
+    public function getId():uint
+    {
+      return this.m_nId;
+    }
     public function getTargetFactory():CTargetFactory
     {
       return this.m_targetFactory;
