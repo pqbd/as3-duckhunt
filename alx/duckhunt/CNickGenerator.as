@@ -228,7 +228,7 @@ package alx.duckhunt
                                                       , '==]====>'
                                                       );
 
-    public function CNameGenerator()
+    public function CNameGenerator():void
     {
     }
     
@@ -240,6 +240,8 @@ package alx.duckhunt
           CNickGenerator.s_random = new CRandom();
         random = CNickGenerator.s_random;
       }
+      else
+        CNickGenerator.s_random = random;
       return CNickGenerator.s_arDatabase[ random.nextUint( 0, CNickGenerator.s_arDatabase.length)];
     }
   }

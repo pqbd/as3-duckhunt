@@ -236,34 +236,37 @@ package alx.duckhunt
       if ( this.m_weapon != null)
       {
         var arBullet:Array = this.m_weapon.fire( new CVector2f( event.stageX, event.stageY));
-        var nBulletCount:int = arBullet.length;
-        if ( nBulletCount > 0)
+        if ( !this.isRoundFinished())
         {
-          this.m_currentRound.getStatistic().incShoots();
-          var bMiss:Boolean = true;
-          var iterator:IIterator = this.m_targetList.iterator();
-          while ( iterator.hasNext())
+          var nBulletCount:int = arBullet.length;
+          if ( nBulletCount > 0)
           {
-            var target:CTarget = iterator.next() as CTarget;
-            if ( target.isHittable())
+            this.m_currentRound.getStatistic().incShoots();
+            var bMiss:Boolean = true;
+            var iterator:IIterator = this.m_targetList.iterator();
+            while ( iterator.hasNext())
             {
-              for ( var i:int = 0; i < nBulletCount; i++)
+              var target:CTarget = iterator.next() as CTarget;
+              if ( target.isHittable())
               {
-                var bullet:CVector2f = arBullet[ i];
-                if ( target.checkHit( bullet.getX(), bullet.getY()))
+                for ( var i:int = 0; i < nBulletCount; i++)
                 {
-                  target.hit();
-                  bMiss = false;
-                  this.onTargetHit( target);
+                  var bullet:CVector2f = arBullet[ i];
+                  if ( target.checkHit( bullet.getX(), bullet.getY()))
+                  {
+                    target.hit();
+                    bMiss = false;
+                    this.onTargetHit( target);
+                  }
                 }
               }
+              //else
+              //if ( target.isDisposed())
+              //  iterator.remove();
             }
-            //else
-            //if ( target.isDisposed())
-            //  iterator.remove();
+            if ( bMiss)
+              this.onTargetMiss();
           }
-          if ( bMiss)
-            this.onTargetMiss();
         }
       }
     }
