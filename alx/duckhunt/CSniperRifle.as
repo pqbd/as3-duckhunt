@@ -39,8 +39,9 @@ package alx.duckhunt
     }
     public override function onDisplayResize( display:CDisplay, event:Event):void
     {
-      this.m_magazineAnimation.x = display.getWidth() - 20;
-      this.m_magazineAnimation.y = display.getHeight() - 5;
+      var nMargin:int = 5;
+      this.m_magazineAnimation.x = display.getWidth() - this.m_magazineAnimation.width - nMargin;
+      this.m_magazineAnimation.y = display.getHeight() - nMargin;
     }
     public override function updatePosition( position:CVector2f):void
     {

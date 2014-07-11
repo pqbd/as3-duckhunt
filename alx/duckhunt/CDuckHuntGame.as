@@ -119,7 +119,7 @@ package alx.duckhunt
         }
         else
         {
-          position = new CVector2f( random.nextInt( this.getDisplay().getWidth(), this.getDisplay().getWidth() * 2)
+          position = new CVector2f( random.nextInt( this.getDisplay().getWidth(), this.getDisplay().getWidth() * 1.5)
                                   , random.nextInt( 0, this.getDisplay().getHeight())
                                   );
         }
@@ -148,7 +148,8 @@ package alx.duckhunt
         {
           target.dispose();
           iterator.remove();
-          this.emitCloud( 1);
+          if ( this.m_cloudTargetList.size() < ( this.getCurrentRound().getSetting( CDuckHuntGame.CLOUD_RATE) as int))
+            this.emitCloud( 1);
         }
       }
     }
@@ -163,7 +164,7 @@ package alx.duckhunt
 
       var headShot:MovieClip = new this.m_headShotClass();
       headShot.c_nick1.text = this.m_strPlayerName;
-      headShot.c_nick2.text = 'Duck['+target.getId()+']';
+      headShot.c_nick2.text = CNickGenerator.next();
       
       var display:CDisplay = new CDisplay( this.getDisplay().getSrc().parent);
       headShot.x = display.getWidth() - headShot.width;
@@ -248,7 +249,7 @@ package alx.duckhunt
       
       this.m_cloudFactory.setSizeLimit( this.getCurrentRound().getSetting( CDuckHuntGame.CLOUD_SIZE) as CVector2f);
 
-      this.emitCloud( this.getCurrentRound().getSetting( CDuckHuntGame.CLOUD_RATE) as int, true);
+      this.emitCloud( this.getCurrentRound().getSetting( CDuckHuntGame.CLOUD_RATE) as int);
 
       super.onRoundStart();
     }

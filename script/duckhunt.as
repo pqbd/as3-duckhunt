@@ -35,6 +35,9 @@ game.Init( new CRound( new CRandomTargetFactory( null
                       , 2
                       , 10
                       )
+                      .setSetting( CDuckHuntGame.CLOUD_SIZE, new CVector2f( 3, 7))
+                    .setSetting( CDuckHuntGame.CLOUD_RATE, 10)
+                    .setSetting( CDuckHuntGame.CLOUD_SPEED, new CVector2f( 0.1, 2))
           , new CRound( new CRandomTargetFactory( null
                                                , new CDuckTargetFactory( _MCDuck)
                                                , new CDuckTargetFactory( _MCDrake)
@@ -44,9 +47,9 @@ game.Init( new CRound( new CRandomTargetFactory( null
                       , 4
                       , 10
                       )
-                    .setSetting( CDuckHuntGame.CLOUD_SIZE, new CVector2f( 3, 7))
-                    .setSetting( CDuckHuntGame.CLOUD_RATE, 10)
-                    .setSetting( CDuckHuntGame.CLOUD_SPEED, new CVector2f( 0.1, 2))
+                    //.setSetting( CDuckHuntGame.CLOUD_SIZE, new CVector2f( 3, 7))
+                    //.setSetting( CDuckHuntGame.CLOUD_RATE, 10)
+                    //.setSetting( CDuckHuntGame.CLOUD_SPEED, new CVector2f( 0.1, 2))
           , new CRound( new CRandomTargetFactory( null
                                                , new CDuckTargetFactory( _MCDuck)
                                                , new CDuckTargetFactory( _MCDrake)
@@ -59,6 +62,15 @@ game.Init( new CRound( new CRandomTargetFactory( null
                     .setSetting( CDuckHuntGame.CLOUD_SIZE, new CVector2f( 3, 7))
                     .setSetting( CDuckHuntGame.CLOUD_RATE, 15)
                     .setSetting( CDuckHuntGame.CLOUD_SPEED, new CVector2f( 0.1, 3))
+          , new CRound( new CRandomTargetFactory( null
+                                               , new CDuckTargetFactory( _MCDuck)
+                                               , new CDuckTargetFactory( _MCDrake)
+                                               , new CDuckTargetFactory( _MCDuckDuck)
+                                               //, new CDuckTargetFactory( _MCDrake, _MCDuck)
+                                               )
+                      , 8
+                      , 15
+                      )
           );
 
 var display:DisplayObjectContainer = this.parent;
