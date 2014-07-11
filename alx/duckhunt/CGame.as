@@ -103,11 +103,11 @@ package alx.duckhunt
     {
       if ( this.m_currentRound != null)
       {
-        var nBonusScore:uint = 2000 * this.m_currentRound.getStatistic().getAccuracyRate();
+        var nBonusScore:uint = this.m_currentRound.getScore() * this.m_currentRound.getStatistic().getAccuracyRate();
         if ( this.m_currentRound.getStatistic().getAccuracyPercent() > 80)
-          nBonusScore += 500;
+          nBonusScore += 200;
         if ( this.m_currentRound.getStatistic().getTargetTotal() == this.m_currentRound.getStatistic().getHitTotal())
-          nBonusScore += 500;
+          nBonusScore += 100;
         this.m_currentRound.getStatistic().incScores( nBonusScore);
       }
     }

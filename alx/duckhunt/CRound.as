@@ -6,23 +6,34 @@ package alx.duckhunt
   {
     private static var s_nIdCounter:uint = 1;
     private var m_nId:uint;
+    private var m_nScore:uint;
     private var m_targetFactory:CTargetFactory;
     private var m_nTargetLimit:uint;
     private var m_nTargetTotal:uint;
     private var m_statistic:CStatistic;
     private var m_settings:CHashMap;
+    private var m_targetForceLimit:CVector2f;
+    private var m_targetAngleLimit:CVector2f;
 
-    public function CRound( targetFactory:CTargetFactory
+    public function CRound( nScore:uint
+                          , targetFactory:CTargetFactory
                           , nTargetLimit:uint
                           , nTargetTotal:uint
+                          , targetForceLimit:CVector2f
+                          , targetAngleLimit:CVector2f = null
                           ):void
     {
       this.m_nId = CRound.s_nIdCounter++;
+      this.m_nScore = nScore;
       this.m_statistic = new CStatistic();
       this.m_targetFactory = targetFactory;
       this.m_nTargetLimit = nTargetLimit;
       this.m_nTargetTotal = nTargetTotal;
       this.m_settings = new CHashMap();
+      this.m_targetForceLimit = targetForceLimit;
+      if ( targetAngleLimit == null)
+        targetAngleLimit = new CVector2f( 5, 60);
+      this.m_targetAngleLimit = targetAngleLimit;
     }
 
     public function setSetting( strKey:String, value:Object):CRound
@@ -33,6 +44,11 @@ package alx.duckhunt
     public function getSetting( strKey:String):Object
     {
       return this.m_settings.get( strKey);
+    }
+
+    public function getScore():uint
+    {
+      return this.m_nScore;
     }
 
     public function getTargetFactory():CTargetFactory
@@ -61,20 +77,11 @@ package alx.duckhunt
     }
     public function getTargetMinForce():CVector2f
     {
-      var nXForce:uint = 0.5 * this.getRoundNumber();
-      if ( nXForce > 10)
-        nXForce = 10;
-      return new CVector2f( nXForce, 5);
+      return new CVector2f( this.m_targetForceLimit.getX(), this.m_targetAngleLimit.getX());
     }
     public function getTargetMaxForce():CVector2f
     {
-      var nXForce:uint = 1 * this.getRoundNumber();
-      if ( nXForce > 20)
-        nXForce = 11;
-      else
-      if ( nXForce > 10)
-        nXForce = 10;
-      return new CVector2f( nXForce, 60);
+      return new CVector2f( this.m_targetForceLimit.getY(), this.m_targetAngleLimit.getY());
     }
   }
 }
