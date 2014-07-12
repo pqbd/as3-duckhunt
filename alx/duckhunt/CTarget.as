@@ -123,6 +123,10 @@ package alx.duckhunt
     {
       return this.isState(( CTarget.STATE_OK | CTarget.STATE_MISSED));
     }
+    public function isOk():Boolean
+    {
+      return this.isState( CTarget.STATE_OK);
+    }
     public function isDisposed():Boolean
     {
       return this.isState( CTarget.STATE_DISPOSED);

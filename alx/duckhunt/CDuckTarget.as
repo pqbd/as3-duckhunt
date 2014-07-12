@@ -13,7 +13,7 @@ package alx.duckhunt
     public function CDuckTarget( positionVector:CVector2f
                               , forceVector:CVector2f
                               , animation:MovieClip
-                              , bTurn:Boolean = false                              
+                              , bTurn:Boolean = false
                               , nXTurns:int = -1
                               , bFear:Boolean = false
                               ):void
@@ -44,13 +44,16 @@ package alx.duckhunt
 
     public override function turnX():CTarget
     {
-      this.m_animation.scaleX *= -1;
-      super.turnX();
-      if ( this.m_nXTurns == 0)
-        this.miss();
-      else
-      if ( this.m_nXTurns > 0)
-        this.m_nXTurns--;
+      if ( !this.isDisposed())
+      {
+        this.m_animation.scaleX *= -1;
+        super.turnX();
+        if ( this.m_nXTurns == 0)
+          this.miss();
+        else
+        if ( this.m_nXTurns > 0)
+          this.m_nXTurns--;
+      }
       return this;
     }
     public override function turnY():CTarget
@@ -102,8 +105,8 @@ package alx.duckhunt
 
     public override function hit():CTarget
     {
-      this.m_animation.gotoAndPlay( 17);
       this.setState( CTarget.STATE_HIT);
+      this.m_animation.gotoAndPlay( 17);
       this.getSpeed().setX( 0).setY( 0);
       var timer:Timer = new Timer( 500, 1);
       timer.addEventListener( TimerEvent.TIMER, hitTimerHandler);
@@ -129,15 +132,15 @@ package alx.duckhunt
     }
     protected function disposeTimerHandler( event:TimerEvent):void
     {
-      this.m_animation.parent.removeChild( this.m_animation);
       this.m_animation.stop();
+      this.m_animation.parent.removeChild( this.m_animation);
       this.m_animation = null;
     }
 
 
     public override function miss():CTarget
     {
-      if ( !this.isMissed())
+      if ( this.isOk())
       {
         this.m_animation.gotoAndPlay( 50);
         this.setState( CTarget.STATE_MISSED);
@@ -150,8 +153,7 @@ package alx.duckhunt
     }
     protected function missTimerHandler( event:TimerEvent):void
     {
-      if ( !this.isDisposed())
-      if ( this.m_animation != null)
+      if ( this.isMissed())
       {
         this.m_animation.gotoAndPlay( 66);
         this.getSpeed().set( 0, -this.getSpeed().norm());
