@@ -73,12 +73,6 @@ package alx.duckhunt
       return this;
     }
 
-    public function Calculate():uint
-    {
-      var nDuck1 = this.m_nScoreDuck1 / this.m_nCountDuck1;
-      var nDuck2 = this.m_nScoreDuck2 / this.m_nCountDuck2;
-      return ( nDuck1 + nDuck2 - this.m_nShots * 5);
-    }
     public function toString():String
     {
       return 'Shots['+this.m_nShots+']'
