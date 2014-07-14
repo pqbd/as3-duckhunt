@@ -9,9 +9,9 @@ package alx.duckhunt
     private var m_animation:MovieClip;
     private var m_sizeLimitVector:CVector2f;
 
-    public function CCloudTargetFactory( ...arAnimationClass):void
+    public function CCloudTargetFactory( nGroupId:uint, ...arAnimationClass):void
     {
-      super();
+      super( nGroupId);
       this.m_arAnimationClass = arAnimationClass;
       this.setSizeLimit( new CVector2f( 1, 1));
     }
@@ -48,9 +48,9 @@ package alx.duckhunt
     public override function createTarget( position:CVector2f, force:CVector2f):CTarget
     {
       if ( this.m_animation == null)
-        return null
+        return null;
       else
-        return new CCloudTarget( position, force, this.m_animation);
+        return new CCloudTarget( position, force, this.m_animation, this.getGroupId());
     }
   }
 }

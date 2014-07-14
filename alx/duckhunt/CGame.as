@@ -1,8 +1,6 @@
 package alx.duckhunt
 {
   import flash.display.DisplayObjectContainer;
-  import flash.display.StageAlign;
-  import flash.display.StageScaleMode;
   import flash.utils.Timer;
   import flash.ui.Mouse;
   import flash.ui.Keyboard;
@@ -41,6 +39,10 @@ package alx.duckhunt
       this.m_nCurrentRoundIndex = 0;
     }
 
+    protected function getDisplay():CDisplay
+    {
+      return this.m_display;
+    }
     public function isReady():Boolean
     {
       var bOk = false;
@@ -48,20 +50,16 @@ package alx.duckhunt
         bOk = true;
       return bOk;
     }
+
     public function setWeapon( weapon:CWeapon):CGame
     {
       this.m_weapon = weapon;
       return this;
     }
 
-    protected function getDisplay():CDisplay
-    {
-      return this.m_display;
-    }
     protected function prepare():void
     {
       this.m_display.addDisplayListener( this);
-
       this.m_weapon.addToDisplay( this.m_display.getSrc().parent);
       this.m_display.addDisplayListener( this.m_weapon);
     }
@@ -70,74 +68,18 @@ package alx.duckhunt
       if ( this.isReady())
       {
         this.m_display = new CDisplay( display);
-
         var timer:Timer = new Timer( 10);
         timer.addEventListener( TimerEvent.TIMER, timerHandler);
-        timer.start();
-        
+        timer.start();        
         Mouse.hide();
         display.stage.addEventListener( MouseEvent.MOUSE_MOVE, onMouseMoveHandler);
         display.stage.addEventListener( MouseEvent.MOUSE_UP, onMouseClickHandler);
-        display.stage.addEventListener( KeyboardEvent.KEY_DOWN, onKeyDownEventHandler);        
-
+        display.stage.addEventListener( KeyboardEvent.KEY_DOWN, onKeyDownEventHandler);
         this.prepare();
       }
       else
         throw Error( 'Game not set');
     }
-
-    protected function isRoundFinished():Boolean
-    {
-      var bOK:Boolean = false;
-      if ( this.m_currentRound == null)
-        bOK = true;
-      else
-      if ( this.m_currentRound.getStatistic().getTargetTotal() == this.m_currentRound.getTargetTotal())
-      {
-        if ( this.m_targetList.isEmpty())
-          bOK = true;
-      }
-      return bOK;
-    }
-    protected function addScore():void
-    {
-      if ( this.m_currentRound != null)
-      {      
-        var nRoundScore:uint = this.m_currentRound.getScore()
-                              * this.m_currentRound.getStatistic().getFinishRate()
-                              ;
-
-        var nBonusScore:uint = 0;
-        if ( this.m_currentRound.getStatistic().getAccuracyPercent() > 80)
-          nBonusScore += 100 * this.m_currentRound.getId();
-        if ( this.m_currentRound.getStatistic().getFinishPercent() == 100)
-          nBonusScore += 100 * this.m_currentRound.getId();
-        nBonusScore *= this.m_currentRound.getStatistic().getAccuracyRate();
-
-        this.m_currentRound.getStatistic().incScores(( nRoundScore + nBonusScore));
-      }
-    }
-    protected function getCurrentRound():CRound
-    {
-      return this.m_currentRound;
-    }
-    protected function nextRound():Boolean
-    {
-      this.m_targetList.clear();
-      var bOk:Boolean = true;      
-      if ( this.m_nCurrentRoundIndex < this.m_arRound.length)
-      {        
-        this.m_currentRound = this.m_arRound[ this.m_nCurrentRoundIndex++];
-        this.m_targetEmitter.setMinForce( this.m_currentRound.getTargetMinForce())
-                            .setMaxForce( this.m_currentRound.getTargetMaxForce())
-                            ;
-        this.onRoundStart();
-      }
-      else
-        bOk = false;
-      return bOk;
-    }
-
     protected function timerHandler( event:TimerEvent):void
     {
       var bDisposed:Boolean = false;
@@ -192,9 +134,16 @@ package alx.duckhunt
     }
     protected function onTargetHit( target:CTarget):void
     {
-      this.m_currentRound.getStatistic().incHit( target.toString());
+      this.m_currentRound.getStatistic().incHit( 'group@'+target.getGroupId());
     }
-
+    protected function onTargetDispose():void
+    {
+      if ( this.m_currentRound != null)
+      if ( this.m_currentRound.getTargetTotal() > this.m_currentRound.getStatistic().getTargetTotal())
+        this.emitTarget();
+      if ( this.isRoundFinished())
+        this.onRoundFinish();
+    }
     protected function emitTarget( nCount:uint = 1):void
     {
       var timer:Timer = new Timer( 100, nCount);
@@ -203,19 +152,72 @@ package alx.duckhunt
     }
     protected function emitTargetTimerHandler( event:TimerEvent):void
     {
-      var target:CTarget = this.m_targetEmitter.EmitRandomOne( this.m_currentRound.getTargetFactory(), this.m_display.getSize(), null);
+      var target:CTarget = this.m_targetEmitter.EmitRandomOne( this.m_currentRound.getTargetFactory()
+                                                              , this.m_display.getSize()
+                                                              , null
+                                                              );
       this.m_targetList.add( target);
       target.addToDisplay( this.m_display);
-      this.m_currentRound.getStatistic().incTarget( target.toString());
+      this.m_currentRound.getStatistic().incTarget( 'group@'+target.getGroupId());
     }
     
-    protected function onTargetDispose():void
+    protected function onRoundStart():void
+    {
+      this.emitTarget( this.m_currentRound.getTargetLimit());
+    }
+    protected function onRoundFinish():void
+    {
+      this.addScore();
+      this.roundResults( this.m_currentRound, this.m_arRound);
+    }
+    protected function getCurrentRound():CRound
+    {
+      return this.m_currentRound;
+    }
+    protected function isRoundFinished():Boolean
+    {
+      var bOK:Boolean = false;
+      if ( this.m_currentRound == null)
+        bOK = true;
+      else
+      if ( this.m_currentRound.getStatistic().getTargetTotal() == this.m_currentRound.getTargetTotal())
+      {
+        if ( this.m_targetList.isEmpty())
+          bOK = true;
+      }
+      return bOK;
+    }
+    protected function nextRound():Boolean
+    {
+      this.m_targetList.clear();
+      var bOk:Boolean = true;      
+      if ( this.m_nCurrentRoundIndex < this.m_arRound.length)
+      {        
+        this.m_currentRound = this.m_arRound[ this.m_nCurrentRoundIndex++];
+        this.m_targetEmitter.setMinForce( this.m_currentRound.getTargetMinForce())
+                            .setMaxForce( this.m_currentRound.getTargetMaxForce())
+                            ;
+        this.onRoundStart();
+      }
+      else
+        bOk = false;
+      return bOk;
+    }
+    protected function addScore():void
     {
       if ( this.m_currentRound != null)
-      if ( this.m_currentRound.getTargetTotal() > this.m_currentRound.getStatistic().getTargetTotal())
-        this.emitTarget();
-      if ( this.isRoundFinished())
-        this.onRoundFinish();
+      {      
+        var nRoundScore:uint = this.m_currentRound.getScore()
+                              * this.m_currentRound.getStatistic().getFinishRate()
+                              ;
+        var nBonusScore:uint = 0;
+        if ( this.m_currentRound.getStatistic().getAccuracyPercent() > 80)
+          nBonusScore += 100 * this.m_currentRound.getId();
+        if ( this.m_currentRound.getStatistic().getFinishPercent() == 100)
+          nBonusScore += 100 * this.m_currentRound.getId();
+        nBonusScore *= this.m_currentRound.getStatistic().getAccuracyRate();
+        this.m_currentRound.getStatistic().incScores(( nRoundScore + nBonusScore));
+      }
     }
     protected function roundResults( round:CRound, arRound:Array):void
     {
@@ -226,18 +228,7 @@ package alx.duckhunt
       var totalStatistic:CStatistic = new CStatistic();
       for ( var i:int = 0; i < arRound.length; i++)
         totalStatistic.add( arRound[ i].getStatistic());
-
-      trace( round.getStatistic());
       trace( totalStatistic);
-    }
-    protected function onRoundFinish():void
-    {
-      this.addScore();
-      this.roundResults( this.m_currentRound, this.m_arRound);
-    }
-    protected function onRoundStart():void
-    {
-      this.emitTarget( this.m_currentRound.getTargetLimit());
     }
 
     protected function onMouseClickHandler( event:MouseEvent):void
@@ -283,25 +274,9 @@ package alx.duckhunt
       if ( this.m_weapon)
         this.m_weapon.updatePosition( new CVector2f( event.stageX, event.stageY));
     }
-    public function onDisplayResize( display:CDisplay, event:Event):void
-    {
-      var iterator:IIterator = this.m_targetList.iterator();
-      while ( iterator.hasNext())
-      {
-        var target:CTarget = iterator.next() as CTarget;
-        var nX:Number = target.getPosition().getX();
-        var nY:Number = target.getPosition().getY();
-        if ( nX > this.m_display.getWidth())
-          nX = this.m_display.getWidth();
-        if ( nY > this.m_display.getHeight())
-          nY = this.m_display.getHeight();
-        target.setPosition( new CVector2f( nX, nY));
-      }
-    }
     protected function checkGameOver():Boolean
     {
       return ( this.m_nCurrentRoundIndex == this.m_arRound.length);
-        
     }
     protected function onKeyDownEventHandler( event:KeyboardEvent):void
     {
@@ -318,6 +293,21 @@ package alx.duckhunt
       {
         if ( this.m_weapon)
           this.m_weapon.reload();
+      }
+    }
+    public function onDisplayResize( display:CDisplay, event:Event):void
+    {
+      var iterator:IIterator = this.m_targetList.iterator();
+      while ( iterator.hasNext())
+      {
+        var target:CTarget = iterator.next() as CTarget;
+        var nX:Number = target.getPosition().getX();
+        var nY:Number = target.getPosition().getY();
+        if ( nX > this.m_display.getWidth())
+          nX = this.m_display.getWidth();
+        if ( nY > this.m_display.getHeight())
+          nY = this.m_display.getHeight();
+        target.setPosition( new CVector2f( nX, nY));
       }
     }
   }

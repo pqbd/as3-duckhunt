@@ -5,8 +5,9 @@ package alx.duckhunt
 
   public class CTarget
   {
-    private static var s_nIdCounter:uint = 1;
+    private static var s_nIdCounter:uint = 0;
     private var m_nId:uint;
+    private var m_nGroupId:uint;
     private var m_positionVector:CVector2f;
     private var m_speedVector:CVector2f;
     private var m_displayObject:DisplayObject;
@@ -20,23 +21,32 @@ package alx.duckhunt
     public function CTarget( positionVector:CVector2f
                             , forceVector:CVector2f
                             , displayObject:DisplayObject
+                            , nGroupId:uint = 0
                             ):void
     {
-      this.m_nId = CTarget.s_nIdCounter++;
+      this.m_nId = ++CTarget.s_nIdCounter;
+      this.m_nGroupId = nGroupId;
       this.m_displayObject = displayObject;
       this.setSpeed( new CVector2f()).applyForce( forceVector);
       this.setPosition( positionVector);
       this.setState( CTarget.STATE_OK);
     }
 
+    public static function getCounterValue():uint
+    {
+      return CTarget.s_nIdCounter;
+    }
     public function getWeight()
     {
       return 1;
     }
-
     public function getId():uint
     {
       return this.m_nId;
+    }
+    public function getGroupId():uint
+    {
+      return this.m_nGroupId;
     }
 
     public function applyForce( forceVector:CVector2f):CTarget
@@ -160,11 +170,6 @@ package alx.duckhunt
     public function dispose():CTarget
     {
       throw Error( 'destroy must be implemented');
-    }
-
-    public function toString():String
-    {
-      return 'target';
     }
   }
 }

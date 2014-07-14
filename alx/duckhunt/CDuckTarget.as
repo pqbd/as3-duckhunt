@@ -13,12 +13,13 @@ package alx.duckhunt
     public function CDuckTarget( positionVector:CVector2f
                               , forceVector:CVector2f
                               , animation:MovieClip
+                              , nGroupId:uint = 0
                               , bTurn:Boolean = false
                               , nXTurns:int = -1
                               , bFear:Boolean = false
                               ):void
     {
-      super( positionVector, forceVector, animation);
+      super( positionVector, forceVector, animation, nGroupId);
       this.m_animation = animation;
       if ( nXTurns < 0)
         nXTurns = -1;
@@ -41,7 +42,6 @@ package alx.duckhunt
     {
       return this.m_bFear;
     }
-
     public override function turnX():CTarget
     {
       if ( !this.isDisposed())
@@ -133,10 +133,10 @@ package alx.duckhunt
     protected function disposeTimerHandler( event:TimerEvent):void
     {
       this.m_animation.stop();
-      this.m_animation.parent.removeChild( this.m_animation);
+      if ( this.m_animation.parent)
+        this.m_animation.parent.removeChild( this.m_animation);
       this.m_animation = null;
     }
-
 
     public override function miss():CTarget
     {

@@ -22,12 +22,10 @@ package test.alx.duckhunt
     {
       throw Error( 'testCreation must be implemented');
     }
-
     public function testCreateTarget():void
     {
       throw Error( 'testCreateTarget must be implemented');
     }
-
     public function testRandomize():void
     {
       throw Error( 'testRandomize must be implemented');

@@ -13,9 +13,9 @@ package alx.duckhunt
     private var m_nFearChance:Number;
     private var m_bFear:Boolean;
 
-    public function CDuckTargetFactory( ...arAnimationClass):void
+    public function CDuckTargetFactory( nGroupId:uint, ...arAnimationClass):void
     {
-      super();
+      super( nGroupId);
       this.m_arAnimationClass = arAnimationClass;
       this.m_nAnimation = 0;
       this.m_bTurn = false;
@@ -44,13 +44,20 @@ package alx.duckhunt
       this.m_bTurn = random.nextBoolean();
       this.m_nAnimation = random.nextInt( 0, this.m_arAnimationClass.length);
       if ( this.m_bUseFear)
-        this.m_bFear = random.nextBoolean( this.m_nFearChance);     
+        this.m_bFear = random.nextBoolean( this.m_nFearChance);
       this.m_nXTurns = random.nextInt( this.m_xTurnLimit.getX(), this.m_xTurnLimit.getY());
     }
     public override function createTarget( position:CVector2f, force:CVector2f):CTarget
     {
       var animationClass:Class = this.m_arAnimationClass[ this.m_nAnimation];
-      return new CDuckTarget( position, force, new animationClass(), this.m_bTurn, this.m_nXTurns, this.m_bFear);
+      return new CDuckTarget( position
+                            , force
+                            , new animationClass()
+                            , this.getGroupId()
+                            , this.m_bTurn
+                            , this.m_nXTurns
+                            , this.m_bFear
+                            );
     }
   }
 }

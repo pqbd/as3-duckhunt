@@ -25,12 +25,11 @@ package test.alx.duckhunt
 
     public override function testCreation():void
     {
-      var targetFactory1:CTargetFactory = new CDuckTargetFactory( MovieClip);
+      var targetFactory1:CTargetFactory = new CDuckTargetFactory( 0, MovieClip);
     }
-
     public override function testCreateTarget():void
     {
-      var targetFactory1:CTargetFactory = new CDuckTargetFactory( MovieClip);
+      var targetFactory1:CTargetFactory = new CDuckTargetFactory( 0, MovieClip);
       var target1:CTarget = targetFactory1.createTarget( new CVector2f( 0, 0)
                                                         , new CVector2f( 5, 5)
                                                         );
@@ -38,10 +37,9 @@ package test.alx.duckhunt
                               , ( target1 is CDuckTarget)
                               );
     }
-
     public override function testRandomize():void
     {
-      var targetFactory1:CTargetFactory = new CDuckTargetFactory( MovieClip1, MovieClip2);
+      var targetFactory1:CTargetFactory = new CDuckTargetFactory( 0, MovieClip1, MovieClip2);
       var target1:CTarget = targetFactory1.createTarget( new CVector2f( 0, 0)
                                                         , new CVector2f( 5, 5)
                                                         );
@@ -104,7 +102,7 @@ package test.alx.duckhunt
 
     public function testXTurnLimit():void
     {
-      var targetFactory1:CDuckTargetFactory = new CDuckTargetFactory( MovieClip1);
+      var targetFactory1:CDuckTargetFactory = new CDuckTargetFactory( 0, MovieClip1);
       targetFactory1.setXTurnLimit( new CVector2f( 1, 5));
       var random:CFakeRandom = new CFakeRandom( 42);
       targetFactory1.randomize( random);
@@ -117,7 +115,7 @@ package test.alx.duckhunt
     }
     public function testFear():void
     {
-      var targetFactory1:CDuckTargetFactory = new CDuckTargetFactory( MovieClip1);
+      var targetFactory1:CDuckTargetFactory = new CDuckTargetFactory( 0, MovieClip1);
       targetFactory1.setUseFear( true);
       var random:CFakeRandom = new CFakeRandom( 42);
       targetFactory1.randomize( random);

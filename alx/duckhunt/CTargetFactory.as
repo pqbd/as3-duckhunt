@@ -4,10 +4,17 @@ package alx.duckhunt
 
   public class CTargetFactory
   {
-    public function CTargetFactory():void
+    private var m_nGroupId:uint;
+
+    public function CTargetFactory( nGroupId:uint = 0):void
     {
+      this.m_nGroupId = nGroupId;
     }
-    
+
+    public function getGroupId():uint
+    {
+      return this.m_nGroupId;
+    }
     public function randomize( random:CRandom = null):void
     {
     }

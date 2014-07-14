@@ -21,6 +21,8 @@ package test.alx.duckhunt
                       , this.testIncTarget
                       , this.testGetAccuracyRate
                       , this.testGetAccuracyPercent
+                      , this.testGetFinishRate
+                      , this.testGetFinishPercent
                       , this.testGetTargetCount
                       , this.testGetTargetHitCount
                       , this.testAdd
@@ -117,8 +119,20 @@ package test.alx.duckhunt
                               , statistic.getTargetTotal()
                               , 0
                               );
+      this.getTester().isEqual( 'statistic.getAccuracyRate()'
+                              , statistic.getAccuracyRate()
+                              , 0
+                              );
       this.getTester().isEqual( 'statistic.getAccuracyPercent()'
                               , statistic.getAccuracyPercent()
+                              , 0
+                              );
+      this.getTester().isEqual( 'statistic.getFinishRate()'
+                              , statistic.getFinishRate()
+                              , 0
+                              );
+      this.getTester().isEqual( 'statistic.getFinishPercent()'
+                              , statistic.getFinishPercent()
                               , 0
                               );
     }
@@ -222,12 +236,66 @@ package test.alx.duckhunt
       this.getTester().isEqual( '2 statistic.getAccuracyPercent()'
                               , statistic.getAccuracyPercent()
                               , 100
-                              );      
+                              );
       statistic.reset();
       statistic.incShoots( 2).incHit( 'target1', 3).incMiss();
       this.getTester().isEqual( '3 statistic.getAccuracyPercent()'
                               , statistic.getAccuracyPercent()
                               , 50
+                              );
+    }
+    public function testGetFinishRate():void
+    {
+      const statistic:CStatistic = new CStatistic();
+      statistic.incTarget( 'target1', 4);
+      statistic.incShoots().incHit( 'target1');
+      statistic.incShoots().incMiss();
+      statistic.incShoots().incHit( 'target1');
+      statistic.incShoots().incMiss();
+
+      this.getTester().isEqual( '1 statistic.getFinishRate()'
+                              , statistic.getFinishRate()
+                              , 0.5
+                              );
+      statistic.reset();
+      statistic.incTarget( 'target1', 4);
+      this.getTester().isEqual( '2 statistic.getFinishRate()'
+                              , statistic.getFinishRate()
+                              , 0
+                              );
+      statistic.reset();
+      statistic.incTarget( 'target1', 4);
+      statistic.incShoots().incHit( 'target1', 4);
+      this.getTester().isEqual( '3 statistic.getFinishRate()'
+                              , statistic.getFinishRate()
+                              , 1
+                              );
+    }
+    public function testGetFinishPercent():void
+    {
+      const statistic:CStatistic = new CStatistic();
+      statistic.incTarget( 'target1', 4);
+      statistic.incShoots().incHit( 'target1');
+      statistic.incShoots().incMiss();
+      statistic.incShoots().incHit( 'target1');
+      statistic.incShoots().incMiss();
+
+      this.getTester().isEqual( '1 statistic.getFinishPercent()'
+                              , statistic.getFinishPercent()
+                              , 50
+                              );
+      statistic.reset();
+      statistic.incTarget( 'target1', 4);
+      this.getTester().isEqual( '2 statistic.getFinishPercent()'
+                              , statistic.getFinishPercent()
+                              , 0
+                              );
+      statistic.reset();
+      statistic.incTarget( 'target1', 4);
+      statistic.incShoots().incHit( 'target1', 4);
+      this.getTester().isEqual( '3 statistic.getFinishPercent()'
+                              , statistic.getFinishPercent()
+                              , 100
                               );
     }
     public function testAdd():void

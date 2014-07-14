@@ -17,7 +17,7 @@ if ( this.stage.loaderInfo.parameters.name != undefined)
 
 game.setDog( new _MCDog())
     .setHeadShotClass( _MCHeadShot)
-    .setCloudFactory( new CCloudTargetFactory( _MCCloud))
+    .setCloudFactory( new CCloudTargetFactory( 0, _MCCloud))
     .setGameStart( new _MCGameStart())
     .setGameOver( new _MCGameOver())
     .setGameRound( new _MCGameRound())
@@ -25,15 +25,15 @@ game.setDog( new _MCDog())
     .setWeapon( new CSniperRifle( new _MCSniperRiffle(), new _MCSniperRiffleRound(), -1))
     ;
 game.Init( new CRound( 100
-                      , new CDuckTargetFactory( _MCDrake)
+                      , new CDuckTargetFactory( 0, _MCDrake)
                       , 1
                       , 3
                       , new CVector2f( 1, 1)
                       )
           , new CRound( 500
                       , new CRandomTargetFactory( null
-                                                , new CDuckTargetFactory( _MCDrake)
-                                                , new CDuckTargetFactory( _MCDuck)
+                                                , new CDuckTargetFactory( 1, _MCDrake)
+                                                , new CDuckTargetFactory( 2, _MCDuck)
                                                             .setUseFear( true, 1)
                                                 )
                       , 2
@@ -42,8 +42,8 @@ game.Init( new CRound( 100
                       )
           , new CRound( 1000
                       , new CRandomTargetFactory( null
-                                                , new CDuckTargetFactory( _MCDrake)
-                                                , new CDuckTargetFactory( _MCDuck)
+                                                , new CDuckTargetFactory( 1, _MCDrake)
+                                                , new CDuckTargetFactory( 2, _MCDuck)
                                                             .setUseFear( true, 1)
                                                 )
                       , 5
@@ -55,8 +55,8 @@ game.Init( new CRound( 100
                     .setSetting( CDuckHuntGame.CLOUD_SPEED, new CVector2f( 0.1, 1))
           , new CRound( 2000
                       , new CRandomTargetFactory( null
-                                                , new CDuckTargetFactory( _MCDrake)
-                                                , new CDuckTargetFactory( _MCDuckDuck)
+                                                , new CDuckTargetFactory( 1, _MCDrake)
+                                                , new CDuckTargetFactory( 2, _MCDuckDuck)
                                                             .setXTurnLimit( new CVector2f( 3, 5))
                                                 )
                       , 2
@@ -65,8 +65,8 @@ game.Init( new CRound( 100
                       )
           , new CRound( 3000
                       , new CRandomTargetFactory( null
-                                                , new CDuckTargetFactory( _MCDrake)
-                                                , new CDuckTargetFactory( _MCDuck)
+                                                , new CDuckTargetFactory( 1, _MCDrake)
+                                                , new CDuckTargetFactory( 2, _MCDuck)
                                                             .setUseFear( true, 1)
                                                             .setXTurnLimit( new CVector2f( 3, 5))
                                                 )
@@ -76,9 +76,9 @@ game.Init( new CRound( 100
                       )
           , new CRound( 4000
                       , new CRandomTargetFactory( null
-                                                , new CDuckTargetFactory( _MCDrake)
+                                                , new CDuckTargetFactory( 1, _MCDrake)
                                                             .setXTurnLimit( new CVector2f( 3, 5))
-                                                , new CDuckTargetFactory( _MCDuck)
+                                                , new CDuckTargetFactory( 2, _MCDuck)
                                                             .setUseFear( true, 1)
                                                             .setXTurnLimit( new CVector2f( 3, 5))
                                                 )
@@ -91,12 +91,12 @@ game.Init( new CRound( 100
                     .setSetting( CDuckHuntGame.CLOUD_SPEED, new CVector2f( 0.1, 1))
           , new CRound( 5000
                       , new CRandomTargetFactory( null
-                                                , new CDuckTargetFactory( _MCDrake)
+                                                , new CDuckTargetFactory( 1, _MCDrake)
                                                             .setXTurnLimit( new CVector2f( 5, 10))
-                                                , new CDuckTargetFactory( _MCDuck)
+                                                , new CDuckTargetFactory( 2, _MCDuck)
                                                             .setUseFear( true, 1)
                                                             .setXTurnLimit( new CVector2f( 5, 10))
-                                                , new CDuckTargetFactory( _MCDuckDuck)
+                                                , new CDuckTargetFactory( 3, _MCDuckDuck)
                                                             .setXTurnLimit( new CVector2f( 3, 5))
                                                             .setUseFear( true, 1)
                                                 )
@@ -109,12 +109,12 @@ game.Init( new CRound( 100
                     .setSetting( CDuckHuntGame.CLOUD_SPEED, new CVector2f( 0.3, 2))
           , new CRound( 7000
                       , new CRandomTargetFactory( null
-                                                , new CDuckTargetFactory( _MCDrake)
+                                                , new CDuckTargetFactory( 1, _MCDrake)
                                                             .setXTurnLimit( new CVector2f( 5, 10))
-                                                , new CDuckTargetFactory( _MCDuck)
+                                                , new CDuckTargetFactory( 2, _MCDuck)
                                                             .setUseFear( true, 1)
                                                             .setXTurnLimit( new CVector2f( 5, 10))
-                                                , new CDuckTargetFactory( _MCDuckDuck)
+                                                , new CDuckTargetFactory( 3, _MCDuckDuck)
                                                             .setXTurnLimit( new CVector2f( 3, 5))
                                                             .setUseFear( true, 1)
                                                 )
@@ -127,12 +127,12 @@ game.Init( new CRound( 100
                     .setSetting( CDuckHuntGame.CLOUD_SPEED, new CVector2f( 0.1, 1))
           , new CRound( 10000
                       , new CRandomTargetFactory( null
-                                                , new CDuckTargetFactory( _MCDrake)
+                                                , new CDuckTargetFactory( 1, _MCDrake)
                                                             .setXTurnLimit( new CVector2f( 5, 10))
-                                                , new CDuckTargetFactory( _MCDuck)
+                                                , new CDuckTargetFactory( 2, _MCDuck)
                                                             .setUseFear( true, 1)
                                                             .setXTurnLimit( new CVector2f( 5, 10))
-                                                , new CDuckTargetFactory( _MCDuckDuck)
+                                                , new CDuckTargetFactory( 3, _MCDuckDuck)
                                                             .setXTurnLimit( new CVector2f( 3, 5))
                                                             .setUseFear( true, 1)
                                                 )
@@ -142,12 +142,12 @@ game.Init( new CRound( 100
                       )
           , new CRound( 15000
                       , new CRandomTargetFactory( null
-                                                , new CDuckTargetFactory( _MCDrake)
+                                                , new CDuckTargetFactory( 1, _MCDrake)
                                                             .setXTurnLimit( new CVector2f( 5, 10))
-                                                , new CDuckTargetFactory( _MCDuck)
+                                                , new CDuckTargetFactory( 2, _MCDuck)
                                                             .setUseFear( true, 1)
                                                             .setXTurnLimit( new CVector2f( 5, 10))
-                                                , new CDuckTargetFactory( _MCDuckDuck)
+                                                , new CDuckTargetFactory( 3, _MCDuckDuck)
                                                             .setXTurnLimit( new CVector2f( 3, 5))
                                                             .setUseFear( true, 1)
                                                 )
@@ -160,11 +160,11 @@ game.Init( new CRound( 100
                     .setSetting( CDuckHuntGame.CLOUD_SPEED, new CVector2f( 0.3, 2))
           , new CRound( 20000
                       , new CRandomTargetFactory( null
-                                                , new CDuckTargetFactory( _MCDrake)
+                                                , new CDuckTargetFactory( 1, _MCDrake)
                                                             .setXTurnLimit( new CVector2f( 9, 18))
-                                                , new CDuckTargetFactory( _MCDuck)
+                                                , new CDuckTargetFactory( 2, _MCDuck)
                                                             .setUseFear( true, 1)
-                                                , new CDuckTargetFactory( _MCDuckDuck)
+                                                , new CDuckTargetFactory( 3, _MCDuckDuck)
                                                             .setUseFear( true, 1)
                                                 )
                       , 10
@@ -176,12 +176,12 @@ game.Init( new CRound( 100
                     .setSetting( CDuckHuntGame.CLOUD_SPEED, new CVector2f( 0.3, 3))
           , new CRound( 30000
                       , new CRandomTargetFactory( null
-                                                , new CDuckTargetFactory( _MCDrake)
+                                                , new CDuckTargetFactory( 1, _MCDrake)
                                                             .setXTurnLimit( new CVector2f( 10, 20))
-                                                , new CDuckTargetFactory( _MCDuck)
+                                                , new CDuckTargetFactory( 2, _MCDuck)
                                                             .setUseFear( true, 1)
                                                             .setXTurnLimit( new CVector2f( 10, 20))
-                                                , new CDuckTargetFactory( _MCDuckDuck)
+                                                , new CDuckTargetFactory( 3, _MCDuckDuck)
                                                             .setXTurnLimit( new CVector2f( 9, 18))
                                                             .setUseFear( true, 1)
                                                 )
@@ -194,7 +194,7 @@ game.Init( new CRound( 100
                     .setSetting( CDuckHuntGame.CLOUD_SPEED, new CVector2f( 0.3, 3))
           , new CRound( 10000
                       , new CRandomTargetFactory( null
-                                                , new CDuckTargetFactory( _MCDuckDuck)
+                                                , new CDuckTargetFactory( 3, _MCDuckDuck)
                                                             .setXTurnLimit( new CVector2f( 10, 10))
                                                             .setUseFear( true, 1)
                                                 )

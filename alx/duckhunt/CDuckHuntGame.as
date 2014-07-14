@@ -12,13 +12,10 @@ package alx.duckhunt
   public class CDuckHuntGame extends CGame
   {
     private var m_strPlayerName:String;
-    
     private var m_headShotClass:Class;
     private var m_headShotList:CArrayList;
-
     private var m_cloudFactory:CCloudTargetFactory;
     private var m_cloudTargetList:CArrayList;
-    
     private var m_dog:MovieClip;
     private var m_gameStart:MovieClip;
     private var m_gameOver:MovieClip;
@@ -32,10 +29,8 @@ package alx.duckhunt
     public function CDuckHuntGame( ...arRound):void
     {
       super( arRound);
-
       this.m_cloudTargetList = new CArrayList();
       this.m_headShotList = new CArrayList();
-
       this.setDog( null)
           .setHeadShotClass( null)
           .setCloudFactory( null)
@@ -103,10 +98,98 @@ package alx.duckhunt
       return bOk;
     }
 
+    protected override function prepare():void
+    {
+      this.m_dog.visible = true;
+      this.m_gameStart.visible = true;
+      this.m_gameOver.visible = false;
+      this.m_gameRound.visible = false;
+      this.m_gameRoundOver.visible = false;
+      this.m_dog.stop();
+      this.m_gameStart.stop();
+      this.m_gameOver.stop();
+      this.m_gameRound.stop();
+      this.m_gameRoundOver.stop();
+      var display:CDisplay = new CDisplay( this.getDisplay().getSrc().parent);
+      display.add( this.m_dog);
+      display.add( this.m_gameOver);
+      display.add( this.m_gameRound);
+      display.add( this.m_gameRoundOver);
+      display.add( this.m_gameStart);
+
+      super.prepare();
+    }
+    protected override function timerHandler( event:TimerEvent):void
+    {
+      super.timerHandler( event);
+      var iterator:IIterator = this.m_cloudTargetList.iterator();
+      while ( iterator.hasNext())
+      {
+        var target:CTarget = iterator.next() as CTarget;
+        target.move();
+        if ( target.getPosition().getX() < -target.getSize().getX())
+        {
+          target.dispose();
+          iterator.remove();
+          if ( this.m_cloudTargetList.size() < ( this.getCurrentRound().getSetting( CDuckHuntGame.CLOUD_RATE) as int))
+            this.emitCloud( 1);
+        }
+      }
+    }
+
+    protected override function onTargetMiss():void
+    {
+      super.onTargetMiss();
+      this.m_dog.gotoAndPlay( 2);
+    }
+    protected override function onTargetHit( target:CTarget):void
+    {
+      super.onTargetHit( target);
+      var headShot:MovieClip = new this.m_headShotClass();
+      headShot.c_nick1.text = this.m_strPlayerName;
+      headShot.c_nick2.text = CNickGenerator.next();
+      var display:CDisplay = new CDisplay( this.getDisplay().getSrc().parent);
+      headShot.x = display.getWidth() - headShot.width;
+      headShot.y = this.m_headShotList.size() * headShot.height;
+      display.add( headShot);
+      this.m_headShotList.add( headShot);
+      var timer:Timer = new Timer( 3000, 1);
+      timer.addEventListener( TimerEvent.TIMER, headshotRemoveTimerHandler);
+      timer.start();
+    }   
+    protected function headshotRemoveTimerHandler( event:TimerEvent)
+    {
+      var iterator:IIterator = this.m_headShotList.iterator();
+      var i:int = 0;
+      while ( iterator.hasNext())
+      {
+        var headShot:MovieClip = iterator.next() as MovieClip;
+        if ( i == 0)
+        {          
+          headShot.stop();
+          headShot.parent.removeChild( headShot);
+          iterator.remove();
+        }
+        else
+          headShot.y = headShot.y - headShot.height;
+        i++;
+      }
+    }
+
+    protected override function onRoundStart():void
+    {
+      this.m_gameStart.visible = false;
+      this.m_gameRoundOver.visible = false;
+      this.m_gameOver.visible = false;
+      this.m_gameRound.visible = true;
+      this.m_gameRound.gotoAndPlay( 1);
+      this.m_cloudFactory.setSizeLimit( this.getCurrentRound().getSetting( CDuckHuntGame.CLOUD_SIZE) as CVector2f);
+      this.emitCloud( this.getCurrentRound().getSetting( CDuckHuntGame.CLOUD_RATE) as int);
+      super.onRoundStart();
+    }
     protected function emitCloud( nCount:uint, bOnDisplay:Boolean = false):void
     {
       var random:CRandom = new CRandom();
-
       for ( var i:int = 0; i < nCount; i++)
       {
         this.m_cloudFactory.randomize( random);
@@ -135,91 +218,9 @@ package alx.duckhunt
         cloud.addToDisplay( this.getDisplay());
       }
     }
-
-    protected override function timerHandler( event:TimerEvent):void
-    {
-      super.timerHandler( event);
-      var iterator:IIterator = this.m_cloudTargetList.iterator();
-      while ( iterator.hasNext())
-      {
-        var target:CTarget = iterator.next() as CTarget;
-        target.move();
-        if ( target.getPosition().getX() < -target.getSize().getX())
-        {
-          target.dispose();
-          iterator.remove();
-          if ( this.m_cloudTargetList.size() < ( this.getCurrentRound().getSetting( CDuckHuntGame.CLOUD_RATE) as int))
-            this.emitCloud( 1);
-        }
-      }
-    }
-    protected override function onTargetMiss():void
-    {
-      super.onTargetMiss();
-      this.m_dog.gotoAndPlay( 2);
-    }
-    protected override function onTargetHit( target:CTarget):void
-    {
-      super.onTargetHit( target);
-
-      var headShot:MovieClip = new this.m_headShotClass();
-      headShot.c_nick1.text = this.m_strPlayerName;
-      headShot.c_nick2.text = CNickGenerator.next();
-      
-      var display:CDisplay = new CDisplay( this.getDisplay().getSrc().parent);
-      headShot.x = display.getWidth() - headShot.width;
-      headShot.y = this.m_headShotList.size() * headShot.height;
-      display.add( headShot);
-      this.m_headShotList.add( headShot);
-      var timer:Timer = new Timer( 3000, 1);
-      timer.addEventListener( TimerEvent.TIMER, headshotRemoveTimerHandler);
-      timer.start();
-    }
-    protected function headshotRemoveTimerHandler( event:TimerEvent)
-    {
-      var iterator:IIterator = this.m_headShotList.iterator();
-      var i:int = 0;
-      while ( iterator.hasNext())
-      {
-        var headShot:MovieClip = iterator.next() as MovieClip;
-        if ( i == 0)
-        {          
-          headShot.stop();
-          headShot.parent.removeChild( headShot);
-          iterator.remove();
-        }
-        else
-          headShot.y = headShot.y - headShot.height;
-        i++;
-      }
-    }
-    protected override function prepare():void
-    {
-      this.m_dog.visible = true;
-      this.m_gameStart.visible = true;
-      this.m_gameOver.visible = false;
-      this.m_gameRound.visible = false;
-      this.m_gameRoundOver.visible = false;
-
-      this.m_dog.stop();
-      this.m_gameStart.stop();
-      this.m_gameOver.stop();
-      this.m_gameRound.stop();
-      this.m_gameRoundOver.stop();
-
-      var display:CDisplay = new CDisplay( this.getDisplay().getSrc().parent);
-      display.add( this.m_dog);
-      display.add( this.m_gameOver);
-      display.add( this.m_gameRound);
-      display.add( this.m_gameRoundOver);
-      display.add( this.m_gameStart);
-
-      super.prepare();
-    }
     protected override function roundResults( round:CRound, arRound:Array):void
     {
       super.roundResults( round, arRound);
-
       this.m_gameRoundOver.c_acuracy.text = round.getStatistic().getAccuracyPercent().toFixed( 2)+'%';
       this.m_gameRoundOver.c_score.text = round.getStatistic().getScores();
       this.m_gameRoundOver.c_round.text = round.getId();
@@ -228,32 +229,30 @@ package alx.duckhunt
     protected override function gameResults( round:CRound, arRound:Array):void
     {
       super.gameResults( round, arRound);
-
       var totalStatistic:CStatistic = new CStatistic();
       for ( var i:int = 0; i < arRound.length; i++)
         totalStatistic.add( arRound[ i].getStatistic());
-
       this.m_gameOver.visible = true;
       this.m_gameOver.c_player.text = this.m_strPlayerName;
       this.m_gameOver.c_acuracy.text = totalStatistic.getAccuracyPercent().toFixed( 2)+'%';
       this.m_gameOver.c_score.text = totalStatistic.getScores();
       this.m_gameRoundOver.visible = false;
-
     }
-    protected override function onRoundStart():void
+
+    protected override function checkGameOver():Boolean
     {
-      this.m_gameStart.visible = false;
-      this.m_gameRoundOver.visible = false;
-      this.m_gameOver.visible = false;
-      this.m_gameRound.visible = true;
-      this.m_gameRound.gotoAndPlay( 1);
-      
-      this.m_cloudFactory.setSizeLimit( this.getCurrentRound().getSetting( CDuckHuntGame.CLOUD_SIZE) as CVector2f);
-
-      this.emitCloud( this.getCurrentRound().getSetting( CDuckHuntGame.CLOUD_RATE) as int);
-
-      super.onRoundStart();
+      var bOver:Boolean = false;
+      if ( super.checkGameOver())
+         bOver = true;
+      else
+      {
+        if ( this.getCurrentRound() != null)
+        if ( this.getCurrentRound().getStatistic().getFinishPercent() < 50)
+          bOver = true;
+      }
+      return bOver;
     }
+
     public override function onDisplayResize( display:CDisplay, event:Event):void
     {
       super.onDisplayResize( display, event);
@@ -279,20 +278,6 @@ package alx.duckhunt
 
       this.m_gameOver.x = display.getWidth() / 2;
       this.m_gameOver.y = display.getHeight() / 2;
-    }
-
-    protected override function checkGameOver():Boolean
-    {
-      var bOver:Boolean = false;
-      if ( super.checkGameOver())
-         bOver = true;
-      else
-      {
-        if ( this.getCurrentRound() != null)
-        if ( this.getCurrentRound().getStatistic().getFinishPercent() < 50)
-          bOver = true;
-      }
-      return bOver;
     }
   }
 }

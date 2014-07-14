@@ -1,5 +1,6 @@
 package test.alx.duckhunt
 {
+  import flash.display.DisplayObject;
   import flash.display.MovieClip;
   import alx.duckhunt.CVector2f;
   import alx.duckhunt.CTarget;
@@ -12,6 +13,42 @@ package test.alx.duckhunt
       super( strLabel);
     }
 
+    public override function createTarget( positionVector:CVector2f
+                                , forceVector:CVector2f
+                                , displayObject:DisplayObject
+                                , nGroupId:uint
+                                ):CTarget
+    {
+      var animation:MovieClip = new MovieClip();
+      animation.addChild( displayObject);
+      return this.createDuckTarget( positionVector
+                                  , forceVector
+                                  , animation
+                                  , nGroupId
+                                  , false
+                                  , -1
+                                  , false
+                                  );
+    }
+    public function createDuckTarget( positionVector:CVector2f
+                                , forceVector:CVector2f
+                                , animation:MovieClip
+                                , nGroupId:uint
+                                , bTurn
+                                , nXTurns
+                                , bFear
+                                ):CDuckTarget
+    {
+      return new CDuckTarget( positionVector
+                            , forceVector
+                            , animation
+                            , nGroupId
+                            , bTurn
+                            , nXTurns
+                            , bFear
+                            );
+    }
+
     protected override function testList():Array
     {
       return super.testList().concat( new Array( this.testXTurnLimit
@@ -19,51 +56,17 @@ package test.alx.duckhunt
                                                 )
                                     );
     }
- 
-    public override function testCreation():void
-    {
-      var target1:CTarget = new CDuckTarget( new CVector2f( 0, 0)
-                                              , new CVector2f( 5, 3)
-                                              , new MovieClip()
-                                              , false
-                                              , 0
-                                              , false
-                                              );
-      this.getTester().isEqual( 'target1.getSpeed().getX()'
-                              , target1.getSpeed().getX()
-                              , 5 / target1.getWeight()
-                              );
-      this.getTester().isEqual( 'target1.getSpeed().getY()'
-                              , target1.getSpeed().getY()
-                              , 3 / target1.getWeight()
-                              );
-
-      var target2:CTarget = new CDuckTarget( new CVector2f( 0, 0)
-                                              , new CVector2f( 5, 3)
-                                              , new MovieClip()
-                                              , true
-                                              , 0
-                                              , false
-                                              );
-      this.getTester().isEqual( 'target2.getSpeed().getX()'
-                              , target2.getSpeed().getX()
-                              , -5 / target2.getWeight()
-                              );
-      this.getTester().isEqual( 'target2.getSpeed().getY()'
-                              , target2.getSpeed().getY()
-                              , 3 / target2.getWeight()
-                              );
-    }
 
     public function testXTurnLimit():void
     {
-      var target1:CTarget = new CDuckTarget( new CVector2f( 0, 0)
-                                              , new CVector2f( 5, 3)
-                                              , new MovieClip()
-                                              , false
-                                              , 5
-                                              , false
-                                              );
+      const target1:CTarget = this.createDuckTarget( new CVector2f( 0, 0)
+                                                  , new CVector2f( 5, 3)
+                                                  , new MovieClip()
+                                                  , 0
+                                                  , true
+                                                  , 5
+                                                  , false
+                                                  );
       this.getTester().isTrue( 'target1.isState( CTarget.STATE_OK)'
                               , target1.isState( CTarget.STATE_OK)
                               );
@@ -85,13 +88,14 @@ package test.alx.duckhunt
     }
     public function testFear():void
     {
-      var target1:CTarget = new CDuckTarget( new CVector2f( 0, 0)
-                                              , new CVector2f( 5, 3)
-                                              , new MovieClip()
-                                              , false
-                                              , -1
-                                              , true
-                                              );
+      const target1:CTarget = this.createDuckTarget( new CVector2f( 0, 0)
+                                                  , new CVector2f( 5, 3)
+                                                  , new MovieClip()
+                                                  , 0
+                                                  , false
+                                                  , -1
+                                                  , true
+                                                  );
       this.getTester().isTrue( 'target1.getSpeed().getX() > 0'
                               , ( target1.getSpeed().getX() > 0)
                               );
@@ -102,6 +106,65 @@ package test.alx.duckhunt
       target1.checkHit( 3, 3);
       this.getTester().isFalse( 'target1.getSpeed().getX() > 0'
                               , ( target1.getSpeed().getX() > 0)
+                              );
+    }
+    public override function testCheckHit():void
+    {
+      const target1:CTarget = this.createDuckTarget( new CVector2f( 0, 0)
+                                                  , new CVector2f( 5, 3)
+                                                  , new MovieClip()
+                                                  , 0
+                                                  , false
+                                                  , -1
+                                                  , false
+                                                  );
+      this.getTester().isTrue( 'target1.checkHit( 20, -10)'
+                              , target1.checkHit( 20, -10)
+                              );
+    }
+    public override function testHit():void
+    {
+      const target1:CTarget = this.createDuckTarget( new CVector2f( 0, 0)
+                                                  , new CVector2f( 5, 3)
+                                                  , new MovieClip()
+                                                  , 0
+                                                  , false
+                                                  , -1
+                                                  , false
+                                                  );
+      target1.hit();
+      this.getTester().isTrue( 'target1.isHit()'
+                              , target1.isHit()
+                              );
+    }
+    public override function testMiss():void
+    {
+      const target1:CTarget = this.createDuckTarget( new CVector2f( 0, 0)
+                                                  , new CVector2f( 5, 3)
+                                                  , new MovieClip()
+                                                  , 0
+                                                  , false
+                                                  , -1
+                                                  , false
+                                                  );
+      target1.miss();
+      this.getTester().isTrue( 'target1.isMissed()'
+                              , target1.isMissed()
+                              );
+    }
+    public override function testDispose():void
+    {
+      const target1:CTarget = this.createDuckTarget( new CVector2f( 0, 0)
+                                                  , new CVector2f( 5, 3)
+                                                  , new MovieClip()
+                                                  , 0
+                                                  , false
+                                                  , -1
+                                                  , false
+                                                  );
+      target1.dispose();
+      this.getTester().isTrue( 'target1.isDisposed()'
+                              , target1.isDisposed()
                               );
     }
   }

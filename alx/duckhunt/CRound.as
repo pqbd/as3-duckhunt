@@ -4,7 +4,7 @@ package alx.duckhunt
 
   public class CRound
   {
-    private static var s_nIdCounter:uint = 1;
+    private static var s_nIdCounter:uint = 0;
     private var m_nId:uint;
     private var m_nScore:uint;
     private var m_targetFactory:CTargetFactory;
@@ -23,7 +23,7 @@ package alx.duckhunt
                           , targetAngleLimit:CVector2f = null
                           ):void
     {
-      this.m_nId = CRound.s_nIdCounter++;
+      this.m_nId = ++CRound.s_nIdCounter;
       this.m_nScore = nScore;
       this.m_statistic = new CStatistic();
       this.m_targetFactory = targetFactory;
@@ -34,6 +34,11 @@ package alx.duckhunt
       if ( targetAngleLimit == null)
         targetAngleLimit = new CVector2f( 5, 60);
       this.m_targetAngleLimit = targetAngleLimit;
+    }
+
+    public static function getCounterValue():uint
+    {
+      return CRound.s_nIdCounter;
     }
 
     public function setSetting( strKey:String, value:Object):CRound
@@ -61,10 +66,6 @@ package alx.duckhunt
     public function getStatistic():CStatistic
     {
       return this.m_statistic;
-    }
-    public function getRoundNumber():uint
-    {
-      return this.m_nId;
     }
     public function getTargetTotal():uint
     {
