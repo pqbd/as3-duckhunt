@@ -17,6 +17,7 @@ package alx.duckhunt
     public static const STATE_HIT:uint = 4;
     public static const STATE_MISSED:uint = 8;
     public static const STATE_DISPOSED:uint = 16;
+    public static const STATE_ZERO:uint = 32;
 
     public function CTarget( positionVector:CVector2f
                             , forceVector:CVector2f
@@ -169,7 +170,11 @@ package alx.duckhunt
     }
     public function dispose():CTarget
     {
-      throw Error( 'destroy must be implemented');
+      if ( this.m_displayObject)
+      if ( this.m_displayObject.parent)
+        this.m_displayObject.parent.removeChild( this.m_displayObject);
+      this.setState( CTarget.STATE_DISPOSED);
+      return this;
     }
   }
 }

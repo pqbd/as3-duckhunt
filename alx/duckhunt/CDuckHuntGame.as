@@ -25,6 +25,7 @@ package alx.duckhunt
     public static const CLOUD_RATE:String = 'cloud-rate';
     public static const CLOUD_SIZE:String = 'cloud-size';
     public static const CLOUD_SPEED:String = 'cloud-speed';
+    public static const FINISH_PERSENT:String = 'finish-persent';
 
     public function CDuckHuntGame( ...arRound):void
     {
@@ -156,7 +157,7 @@ package alx.duckhunt
       var timer:Timer = new Timer( 3000, 1);
       timer.addEventListener( TimerEvent.TIMER, headshotRemoveTimerHandler);
       timer.start();
-    }   
+    }
     protected function headshotRemoveTimerHandler( event:TimerEvent)
     {
       var iterator:IIterator = this.m_headShotList.iterator();
@@ -165,7 +166,7 @@ package alx.duckhunt
       {
         var headShot:MovieClip = iterator.next() as MovieClip;
         if ( i == 0)
-        {          
+        {
           headShot.stop();
           headShot.parent.removeChild( headShot);
           iterator.remove();
@@ -210,7 +211,7 @@ package alx.duckhunt
         var forceLimit:CVector2f = this.getCurrentRound().getSetting( CDuckHuntGame.CLOUD_SPEED) as CVector2f;
         var force:CVector2f = new CVector2f( -random.nextFloat( forceLimit.getX(), forceLimit.getY())
                                             , 0
-                                            ); 
+                                            );
         var cloud:CTarget = this.m_cloudFactory.createTarget( position
                                                             , force
                                                             );
@@ -247,8 +248,13 @@ package alx.duckhunt
       else
       {
         if ( this.getCurrentRound() != null)
-        if ( this.getCurrentRound().getStatistic().getFinishPercent() < 50)
-          bOver = true;
+        {
+          var nFinishPersent:int = this.getCurrentRound().getSetting( CDuckHuntGame.FINISH_PERSENT) as int;
+          if ( nFinishPersent < 1)
+            nFinishPersent = 50;
+          if ( this.getCurrentRound().getStatistic().getFinishPercent() < nFinishPersent)
+            bOver = true;
+        }
       }
       return bOver;
     }

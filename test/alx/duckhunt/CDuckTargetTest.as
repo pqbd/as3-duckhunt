@@ -162,9 +162,12 @@ package test.alx.duckhunt
                                                   , -1
                                                   , false
                                                   );
+      this.getTester().isTrue( 'target1.isOk()'
+                              , target1.isOk()
+                              );
       target1.dispose();
-      this.getTester().isTrue( 'target1.isDisposed()'
-                              , target1.isDisposed()
+      this.getTester().isFalse( 'target1.isOk()'
+                              , target1.isOk()
                               );
     }
   }

@@ -75,6 +75,10 @@ package alx.duckhunt
     {
       return ( this.getTargetTotal() - this.m_statistic.getTargetTotal());
     }
+    public function isNoTargetLeft()
+    {
+      return ( this.getTargetLeft() == 0);
+    }
     public function getTargetLimit():uint
     {
       return this.m_nTargetLimit;

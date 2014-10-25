@@ -30,11 +30,7 @@ package alx.duckhunt
     public override function dispose():CTarget
     {
       this.m_animation.stop();
-      this.setState( CTarget.STATE_DISPOSED);
-      if ( this.m_animation.parent)
-        this.m_animation.parent.removeChild( this.m_animation);
-      this.m_animation = null;
-      return this;
+      return super.dispose();
     }
     public override function miss():CTarget
     {

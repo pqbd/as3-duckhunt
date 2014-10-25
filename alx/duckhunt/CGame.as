@@ -70,7 +70,7 @@ package alx.duckhunt
         this.m_display = new CDisplay( display);
         var timer:Timer = new Timer( 10);
         timer.addEventListener( TimerEvent.TIMER, timerHandler);
-        timer.start();        
+        timer.start();
         Mouse.hide();
         display.stage.addEventListener( MouseEvent.MOUSE_MOVE, onMouseMoveHandler);
         display.stage.addEventListener( MouseEvent.MOUSE_UP, onMouseClickHandler);
@@ -82,7 +82,6 @@ package alx.duckhunt
     }
     protected function timerHandler( event:TimerEvent):void
     {
-      var bDisposed:Boolean = false;
       var iterator:IIterator = this.m_targetList.iterator();
       while ( iterator.hasNext())
       {
@@ -98,34 +97,27 @@ package alx.duckhunt
             if ( target.isHit())
             {
               if ( target.getPosition().getY() > this.m_display.getHeight())
-              {
-                target.move();
                 target.dispose();
-                bDisposed = true;
-                iterator.remove();
-              }
             }
             else
             if ( target.isMissed())
             {
               if ( target.getPosition().getY() < 0)
-              {
-                target.move();
                 target.dispose();
-                bDisposed = true;
-                iterator.remove();
-              }
             }
             else
             {
               target.turnY();
             }
           }
+          target.move();
         }
-        target.move();
+        else
+        {
+          iterator.remove();
+          this.onTargetDispose();
+        }
       }
-      if ( bDisposed)
-        this.onTargetDispose();
     }
 
     protected function onTargetMiss():void
@@ -160,7 +152,7 @@ package alx.duckhunt
       target.addToDisplay( this.m_display);
       this.m_currentRound.getStatistic().incTarget( 'group@'+target.getGroupId());
     }
-    
+
     protected function onRoundStart():void
     {
       this.emitTarget( this.m_currentRound.getTargetLimit());
@@ -180,7 +172,7 @@ package alx.duckhunt
       if ( this.m_currentRound == null)
         bOK = true;
       else
-      if ( this.m_currentRound.getStatistic().getTargetTotal() == this.m_currentRound.getTargetTotal())
+      if ( this.m_currentRound.isNoTargetLeft())
       {
         if ( this.m_targetList.isEmpty())
           bOK = true;
@@ -190,9 +182,9 @@ package alx.duckhunt
     protected function nextRound():Boolean
     {
       this.m_targetList.clear();
-      var bOk:Boolean = true;      
+      var bOk:Boolean = true;
       if ( this.m_nCurrentRoundIndex < this.m_arRound.length)
-      {        
+      {
         this.m_currentRound = this.m_arRound[ this.m_nCurrentRoundIndex++];
         this.m_targetEmitter.setMinForce( this.m_currentRound.getTargetMinForce())
                             .setMaxForce( this.m_currentRound.getTargetMaxForce())
@@ -206,7 +198,7 @@ package alx.duckhunt
     protected function addScore():void
     {
       if ( this.m_currentRound != null)
-      {      
+      {
         var nRoundScore:uint = this.m_currentRound.getScore()
                               * this.m_currentRound.getStatistic().getFinishRate()
                               ;

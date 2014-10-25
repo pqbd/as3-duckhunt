@@ -30,6 +30,7 @@ game.Init( new CRound( 100
                       , 3
                       , new CVector2f( 1, 1)
                       )
+                     .setSetting( CDuckHuntGame.FINISH_PERSENT, 100)
           , new CRound( 500
                       , new CRandomTargetFactory( null
                                                 , new CDuckTargetFactory( 1, _MCDrake)
@@ -213,15 +214,13 @@ display.stage.scaleMode = StageScaleMode.NO_SCALE;
 
 game.start( display);
 
-/*
-var sound:Sound = new SDuckSong();
+var sound:Sound = new _SMain();
 var soundChanel:SoundChannel = sound.play();
 soundChanel.addEventListener( Event.SOUND_COMPLETE, MainSongCompleteHandler);
 
 function MainSongCompleteHandler( event:Event):void
 {
-  var sound:Sound = new SDuckSongMinus();
+  var sound:Sound = new _SMinus();
   var soundChanel:SoundChannel = sound.play();
   soundChanel.addEventListener( Event.SOUND_COMPLETE, MainSongCompleteHandler);
 }
-*/

@@ -24,7 +24,7 @@ soundChanel.addEventListener( Event.SOUND_COMPLETE, MainSongCompleteHandler);
 
 function MainSongCompleteHandler( event:Event):void
 {
-  //var sound:Sound = new SDuckSongMinus();
-  //var soundChanel:SoundChannel = sound.play();
-  //soundChanel.addEventListener( Event.SOUND_COMPLETE, MainSongCompleteHandler);
+  var sound:Sound = new SDuckSongMinus();
+  var soundChanel:SoundChannel = sound.play();
+  soundChanel.addEventListener( Event.SOUND_COMPLETE, MainSongCompleteHandler);
 }

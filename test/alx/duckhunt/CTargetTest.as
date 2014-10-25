@@ -417,6 +417,15 @@ package test.alx.duckhunt
     }
     public function testDispose():void
     {
+      const target1:CTarget = this.createTarget( new CVector2f( 1, 2)
+                                                , new CVector2f( 3, 4)
+                                                , new Sprite()
+                                                , 0
+                                                );
+      target1.dispose();
+      this.getTester().isTrue( 'target1.isDisposed()'
+                              , target1.isDisposed()
+                              );
     }
   }
 }

@@ -116,15 +116,17 @@ package alx.duckhunt
     protected function hitTimerHandler( event:TimerEvent):void
     {
       if ( this.m_animation != null)
+      {
         this.m_animation.gotoAndPlay( 23);
-      this.applyForce( new CVector2f( 0, 9.8));
+        this.applyForce( new CVector2f( 0, 9.8));
+      }
     }
 
     public override function dispose():CTarget
     {
       if ( this.isHit())
         this.m_animation.gotoAndPlay( 45);
-      this.setState( CTarget.STATE_DISPOSED);
+      this.setState( CTarget.STATE_ZERO);
       var timer:Timer = new Timer( 200, 1);
       timer.addEventListener( TimerEvent.TIMER, disposeTimerHandler);
       timer.start();
@@ -132,10 +134,8 @@ package alx.duckhunt
     }
     protected function disposeTimerHandler( event:TimerEvent):void
     {
-      this.m_animation.stop();
-      if ( this.m_animation.parent)
-        this.m_animation.parent.removeChild( this.m_animation);
-      this.m_animation = null;
+      this.m_animation.gotoAndStop( 18);
+      super.dispose();
     }
 
     public override function miss():CTarget
